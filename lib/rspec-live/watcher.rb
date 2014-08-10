@@ -7,6 +7,7 @@ module RSpecLive
 
     def start
       @suite.inventory
+      @suite.update
     end
   end
 end

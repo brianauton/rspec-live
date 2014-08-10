@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
   s.executables = ["rspec-live"]
   s.add_dependency "rspec", "~> 3.0.0"
+  s.add_dependency "listen", "~> 2.7.9"
 end

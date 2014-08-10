@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
-require File.join(File.dirname(__FILE__), "..", "lib", "rspec-live", "version")
+require "rspec-live/suite"
+require "rspec-live/runner"
+require "rspec-live/watcher"
+require "rspec-live/display"
 
-puts RSpecLive::VERSION
+suite = RSpecLive::Suite.new(RSpecLive::Runner.new)
+display = RSpecLive::Display.new
+RSpecLive::Watcher.new(suite, display).start

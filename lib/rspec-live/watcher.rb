@@ -8,21 +8,17 @@ module RSpecLive
     end
 
     def start
-      process_tests :inventory => true
-      Listen.to(Dir.pwd) do |modified, added, removed|
-        process_tests :inventory => (added.any? || removed.any?)
-      end.start
+      process_tests
+      Listen.to(Dir.pwd) { process_tests }.start
       sleep
     rescue Interrupt
     end
 
     private
 
-    def process_tests(options)
-      if options[:inventory]
-        @display.status = "analyzing specs"
-        @suite.inventory
-      end
+    def process_tests
+      @display.status = "analyzing specs"
+      @suite.inventory
       @display.status = "running specs"
       @suite.update
       @display.status = "waiting for updates"

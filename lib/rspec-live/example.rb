@@ -1,3 +1,5 @@
+require "rspec-live/backtrace"
+
 module RSpecLive
   class Example
     attr_reader :status
@@ -27,25 +29,7 @@ module RSpecLive
     end
 
     def failure_message
-      backtrace_components.reverse.join " -> "
-    end
-
-    private
-
-    def backtrace_components
-      @backtrace.map { |component| "[#{abbreviate_backtrace_component component}]" }
-    end
-
-    def abbreviate_backtrace_component(component)
-      file, line = component.split(":")
-      if file.start_with? Dir.pwd
-        file = file.gsub(/^#{Dir.pwd}\//, "")
-        "#{file}:#{line}"
-      elsif file.include? "/gems/"
-        file.split("/gems/").last.split("/").first
-      else
-        "other"
-      end
+      Backtrace.new(@backtrace).components.reverse.join " -> "
     end
   end
 end

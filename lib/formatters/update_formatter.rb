@@ -8,18 +8,22 @@ class UpdateFormatter
   end
 
   def example_passed(notification)
-    report_status notification.example.location, "passed"
+    report :name => notification.example.location, :status => "passed"
   end
 
   def example_failed(notification)
-    report_status notification.example.location, "failed"
+    report({
+      :name => notification.example.location,
+      :status => "failed",
+      :backtrace => notification.exception.backtrace,
+    })
   end
 
   def example_pending(notification)
-    report_status notification.example.location, "pending"
+    report :name => notification.example.location, :status => "pending"
   end
 
-  def report_status(name, status)
-    @output << "#{JSON.unparse :name => name, :status => status}\n"
+  def report(data)
+    @output << "#{JSON.unparse data}\n"
   end
 end

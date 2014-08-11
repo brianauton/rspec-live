@@ -3,17 +3,11 @@ module RSpecLive
     def initialize(data, display)
       @name = data["name"]
       @display = display
-      @display.status = "?"
+      @display.status = :unknown
     end
 
     def status=(status)
-      @display.status = status_codes[status]
-    end
-
-    private
-
-    def status_codes
-      {"passed" => ".", "failed" => "F", "pending" => "S"}
+      @display.status = status.to_sym
     end
   end
 end

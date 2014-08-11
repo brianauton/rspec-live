@@ -35,7 +35,22 @@ module RSpecLive
     end
 
     def update_display
-      @display.examples = @example_names.map { |name| @examples[name] }
+      @display.show_examples ordered_examples, summary
+    end
+
+    def ordered_examples
+      @example_names.map { |name| @examples[name] }
+    end
+
+    def passed_examples
+      ordered_examples.select { |example| example.passed? }
+    end
+
+    def summary
+      passed = passed_examples.length
+      total = ordered_examples.length
+      percent = (100*passed/total.to_f).round
+      "#{passed} of #{total} examples passed (#{percent}%)"
     end
   end
 end

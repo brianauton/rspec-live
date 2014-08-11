@@ -10,5 +10,9 @@ module RSpecLive
     def status=(value)
       @status = value.to_sym
     end
+
+    def passed?
+      @status == :passed
+    end
   end
 end

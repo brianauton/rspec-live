@@ -18,7 +18,7 @@ module RSpecLive
       Curses.clrtoeol if options[:clear_row]
     end
 
-    def text(text, options)
+    def text(text, options = {})
       move_to(*options[:at], options) if options[:at]
       if options[:color]
         Curses.attron(color_attribute options[:color]) { Curses.addstr text }

@@ -32,21 +32,11 @@ module RSpecLive
       @x = -1
     end
 
-    def example_display
-      @x += 1
-      ExampleDisplay.new @terminal, @x, 1
-    end
-  end
-
-  class ExampleDisplay
-    def initialize(terminal, x, y)
-      @terminal = terminal
-      @x = x
-      @y = y
-    end
-
-    def status=(status)
-      @terminal.text character[status], :at => [@x, @y], :color => color[status]
+    def example_statuses=(statuses)
+      @terminal.move_to 0, 1, :clear_row => true
+      statuses.each do |status|
+        @terminal.text character[status], :color => color[status]
+      end
     end
 
     private

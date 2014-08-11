@@ -13,9 +13,13 @@ module RSpecLive
       end
     end
 
-    def text(text, options)
-      Curses.setpos options[:at][1], options[:at][0] if options[:at]
+    def move_to(x, y, options={})
+      Curses.setpos y, x
       Curses.clrtoeol if options[:clear_row]
+    end
+
+    def text(text, options)
+      move_to(*options[:at], options) if options[:at]
       if options[:color]
         Curses.attron(color_attribute options[:color]) { Curses.addstr text }
       else

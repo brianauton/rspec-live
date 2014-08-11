@@ -1,13 +1,14 @@
 module RSpecLive
   class Example
-    def initialize(data, display)
+    attr_reader :status
+
+    def initialize(data)
       @name = data["name"]
-      @display = display
-      @display.status = :unknown
+      @status = (data["status"] || :unknown).to_sym
     end
 
-    def status=(status)
-      @display.status = status.to_sym
+    def status=(value)
+      @status = value.to_sym
     end
   end
 end

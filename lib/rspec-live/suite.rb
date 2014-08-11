@@ -35,7 +35,7 @@ module RSpecLive
     end
 
     def update_display
-      @display.example_statuses = @example_names.map { |name| @examples[name].status }
+      @display.examples = @example_names.map { |name| @examples[name] }
     end
   end
 end

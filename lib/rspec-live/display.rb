@@ -32,9 +32,9 @@ module RSpecLive
       @x = -1
     end
 
-    def example_statuses=(statuses)
+    def examples=(examples)
       @terminal.move_to 0, 1, :clear_row => true
-      statuses.each do |status|
+      examples.map(&:status).each do |status|
         @terminal.text character[status], :color => color[status]
       end
     end

@@ -29,7 +29,7 @@ module RSpecLive
     end
 
     def failure_message
-      Backtrace.new(@backtrace).components.reverse.join " -> "
+      Backtrace.new(@backtrace).components.reverse.map { |c| "[#{c}]" }.join " -> "
     end
   end
 end

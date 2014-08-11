@@ -2,8 +2,9 @@ require "rspec-live/example"
 
 module RSpecLive
   class Suite
-    def initialize(runner)
+    def initialize(runner, display)
       @runner = runner
+      @display = display
       @examples = {}
     end
 
@@ -11,7 +12,7 @@ module RSpecLive
       new_examples = {}
       @runner.inventory do |example_data|
         name = example_data["name"]
-        new_examples[name] = @examples[name] || Example.new(example_data)
+        new_examples[name] = find_or_create_example(name, example_data)
       end
       @examples = new_examples
     end
@@ -19,9 +20,15 @@ module RSpecLive
     def update
       @runner.update do |example_data|
         name = example_data["name"]
-        example = @examples[name] || Example.new(example_data)
+        example = find_or_create_example(name, example_data)
         example.status = example_data["status"]
       end
+    end
+
+    private
+
+    def find_or_create_example(name, data)
+      @examples[name] || Example.new(data, @display.example_display)
     end
   end
 end

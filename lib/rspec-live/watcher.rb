@@ -20,12 +20,12 @@ module RSpecLive
 
     def process_tests(options)
       if options[:inventory]
-        @display.watcher_status = "analyzing specs"
+        @display.status = "analyzing specs"
         @suite.inventory
       end
-      @display.watcher_status = "running specs"
+      @display.status = "running specs"
       @suite.update
-      @display.watcher_status = "waiting for updates"
+      @display.status = "waiting for updates"
     end
   end
 end

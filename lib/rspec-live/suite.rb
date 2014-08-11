@@ -35,19 +35,15 @@ module RSpecLive
     end
 
     def update_display
-      @display.show_examples ordered_examples, summary
+      @display.show_examples ordered_examples, summary, ordered_examples.select(&:failed?)
     end
 
     def ordered_examples
       @example_names.map { |name| @examples[name] }
     end
 
-    def passed_examples
-      ordered_examples.select { |example| example.passed? }
-    end
-
     def summary
-      passed = passed_examples.length
+      passed = ordered_examples.select(&:passed?).length
       total = ordered_examples.length
       percent = (100*passed/total.to_f).round
       "#{passed} of #{total} examples passed (#{percent}%)"

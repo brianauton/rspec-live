@@ -14,5 +14,13 @@ module RSpecLive
     def passed?
       @status == :passed
     end
+
+    def failed?
+      @status == :failed
+    end
+
+    def failure_message
+      "failure details"
+    end
   end
 end

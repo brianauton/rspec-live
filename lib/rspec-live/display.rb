@@ -2,44 +2,39 @@ require "rspec-live/terminal"
 
 module RSpecLive
   class Display
+    attr_reader :watcher_display, :suite_display
+
     def initialize
       @terminal = Terminal.new
-    end
-
-    def watcher_display
-      WatcherDisplay.new @terminal
-    end
-
-    def suite_display
-      SuiteDisplay.new @terminal
+      @watcher_display = WatcherDisplay.new(@terminal.add_section)
+      @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
     end
   end
 
   class WatcherDisplay
-    def initialize(terminal)
-      @terminal = terminal
+    def initialize(section)
+      @section = section
     end
 
     def status=(status)
       version = RSpecLive::VERSION
-      @terminal.text "RSpec Live #{version} [#{status}]", :at => [0, 0], :clear_row => true
+      @section.content = "RSpec Live #{version} [#{status}]"
     end
   end
 
   class SuiteDisplay
-    def initialize(terminal)
-      @terminal = terminal
-      @x = -1
+    def initialize(section)
+      @section = section
     end
 
     def show_examples(examples, suite_status, failed_examples)
-      @terminal.move_to 0, 1, :clear_row => true
+      @section.clear
       examples.map(&:status).each do |status|
-        @terminal.text character[status], :color => color[status]
+        @section.add_section :content => character[status], :color => color[status]
       end
-      @terminal.text "#{suite_status}", :at => [0, 2], :clear_row => true
+      @section.add_section :content => "#{suite_status}", :display => :block
       failed_examples.each do |example|
-        @terminal.text "\n\n#{example.failure_message}", :color => :red
+        @section.add_section :content => example.failure_message, :display => :block, :color => :red
       end
     end
 

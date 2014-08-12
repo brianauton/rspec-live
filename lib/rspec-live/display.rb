@@ -7,7 +7,14 @@ module RSpecLive
     def initialize
       @terminal = Terminal.new
       @watcher_display = WatcherDisplay.new(@terminal.add_section :align => :center)
+      @terminal.add_section :display => :block, :content => key_command_info
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
+    end
+
+    private
+
+    def key_command_info
+      "[ R:rerun | Q:quit ]"
     end
   end
 

@@ -10,11 +10,18 @@ module RSpecLive
     def start
       process_tests
       Listen.to(Dir.pwd) { process_tests }.start
-      sleep
+      while perform_key_command; end
     rescue Interrupt
     end
 
     private
+
+    def perform_key_command
+      key = STDIN.getc.chr.downcase
+      return false if key == "q"
+      process_tests if key == "r"
+      true
+    end
 
     def process_tests
       @display.status = "analyzing specs"

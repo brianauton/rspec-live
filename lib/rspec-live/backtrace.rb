@@ -25,12 +25,20 @@ module RSpecLive
     end
 
     def to_s
-      if @file.start_with? Dir.pwd
-        "#{@file.gsub(/^#{Dir.pwd}\//, "")}:#{@line}"
-      elsif @file.include? "/gems/"
-        @file.split("/gems/").last.split("/").first
-      else
-        "other"
+      local_file_reference || gem_reference || "other"
+    end
+
+    private
+
+    def local_file_reference
+      "#{@file.gsub(/^#{Dir.pwd}\//, "")}:#{@line}" if @file.start_with? Dir.pwd
+    end
+
+    def gem_reference
+      if @file.include? "/gems/"
+        gem_parts = @file.split("/gems/").last.split("/").first.split("-")
+        gem_name = gem_parts[0, gem_parts.length - 1].join("-")
+        "gem:#{gem_name}"
       end
     end
   end

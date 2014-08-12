@@ -47,7 +47,7 @@ module RSpecLive
     end
 
     def exception_components
-      [@message.inspect]
+      [@message.gsub("\n", " ").strip.inspect]
     end
   end
 end

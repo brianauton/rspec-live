@@ -76,7 +76,7 @@ module RSpecLive
     end
 
     def draw
-      Curses.addstr "\n\n" if @display == :block
+      Curses.addstr "\n" if @display == :block
       draw_left_margin
       if @color
         Curses.attron(color_attribute @color) { draw_content }

@@ -35,10 +35,13 @@ module RSpecLive
 
     def show_examples(examples, suite_status, detailed_examples)
       @section.clear
+      @section.add_section :display => :block
       examples.map(&:status).each do |status|
         @section.add_section :content => character[status], :color => color[status]
       end
+      @section.add_section :display => :block
       @section.add_section :content => "#{suite_status}", :display => :block
+      @section.add_section :display => :block
       bullet_width = (detailed_examples.length-1).to_s.length
       detailed_examples.each_with_index do |example, index|
         bullet = "#{index+1}.".rjust(bullet_width+1, " ")

@@ -30,11 +30,15 @@ module RSpecLive
     end
 
     def details
-      failed? ? failure_message : "(#{@name})"
+      failed? ? failure_message : name_component
+    end
+
+    def name_component
+      "(" + @name.gsub(/^.\//, "") + ")"
     end
 
     def failure_message
-      (backtrace_components + exception_components).compact.join " -> "
+      ([name_component] + backtrace_components + exception_components).compact.join " -> "
     end
 
     def backtrace_components

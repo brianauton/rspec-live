@@ -91,7 +91,7 @@ module RSpecLive
       text = @content
       bullet = @bullet ? "#{@bullet} " : ""
       if @display == :block && @wrap
-        text = bullet + wrap_with_margin(text, Terminal.width, bullet.length)
+        text = bullet + wrap_with_margin(text, Terminal.width-1, bullet.length)
       end
       Curses.addstr text
     end

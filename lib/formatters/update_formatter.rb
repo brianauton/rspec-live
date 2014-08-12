@@ -16,6 +16,7 @@ class UpdateFormatter
       :name => notification.example.location,
       :status => "failed",
       :backtrace => notification.exception.backtrace,
+      :message => notification.exception.message,
     })
   end
 

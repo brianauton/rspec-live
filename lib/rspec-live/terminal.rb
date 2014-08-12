@@ -49,13 +49,11 @@ module RSpecLive
     def add_section(options = {})
       new_section = TerminalSection.new(self, options)
       @children << new_section
-      refresh if options[:content]
       new_section
     end
 
     def content=(value)
       @content = value.to_s
-      refresh
     end
 
     def clear

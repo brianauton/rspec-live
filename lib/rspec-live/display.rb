@@ -25,6 +25,7 @@ module RSpecLive
 
     def status=(status)
       @section.content = "RSpec summary for #{File.basename Dir.pwd} (#{status})"
+      @section.refresh
     end
   end
 
@@ -51,6 +52,7 @@ module RSpecLive
         @section.add_section :display => :block if example.failed?
         last_failed = example.failed?
       end
+      @section.refresh
     end
 
     private

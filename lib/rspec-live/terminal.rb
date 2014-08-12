@@ -97,11 +97,11 @@ module RSpecLive
     end
 
     def draw_left_margin
-      Curses.addstr(("=" * (((Terminal.width - @content.length) / 2) - 1)) + " ") if @align == :center
+      Curses.addstr(("=" * [0, (((Terminal.width - @content.length) / 2) - 1)].max) + " ") if @align == :center
     end
 
     def draw_right_margin
-      Curses.addstr(" " + ("=" * (((Terminal.width - @content.length) / 2) - 2))) if @align == :center
+      Curses.addstr(" " + ("=" * [0, (((Terminal.width - @content.length) / 2) - 2)].max)) if @align == :center
     end
 
     private

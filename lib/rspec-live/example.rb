@@ -2,7 +2,7 @@ require "rspec-live/backtrace"
 
 module RSpecLive
   class Example
-    attr_reader :status
+    attr_reader :name, :status
 
     def initialize
       @name = ""

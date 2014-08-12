@@ -30,7 +30,15 @@ module RSpecLive
       end
     end
 
+    def focus_next
+      @focused = detailed_examples[1].name if detailed_examples[1]
+      update_display
+    end
+
     private
+
+    def next_visible(name)
+    end
 
     def update_or_create_example(data)
       name = data["name"]
@@ -46,7 +54,12 @@ module RSpecLive
     end
 
     def detailed_examples
-      @show_all ? ordered_examples : ordered_examples.select(&:failed?)
+      all = ordered_examples
+      if @focused
+        index = @example_names.index(@focused) || 0
+        all = all[index, all.length-index] + all[0, index]
+      end
+      @show_all ? all : all.select(&:failed?)
     end
 
     def ordered_examples

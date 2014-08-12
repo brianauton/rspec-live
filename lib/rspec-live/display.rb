@@ -14,7 +14,7 @@ module RSpecLive
     private
 
     def key_command_info
-      "[ A:all | R:rerun | Q:quit ]"
+      "[ A:all | N:next | R:rerun | Q:quit ]"
     end
   end
 

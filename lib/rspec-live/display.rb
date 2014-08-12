@@ -40,8 +40,7 @@ module RSpecLive
       end
       @section.add_section :content => "#{suite_status}", :display => :block
       detailed_examples.each do |example|
-        color = example.failed? ? :red : (example.passed? ? :green : :yellow )
-        @section.add_section :content => example.details, :display => :block, :color => color, :wrap => true
+        @section.add_section :content => example.details, :display => :block, :color => color[example.status], :wrap => true
       end
     end
 

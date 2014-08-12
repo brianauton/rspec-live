@@ -42,10 +42,14 @@ module RSpecLive
       @section.add_section :display => :block
       @section.add_section :content => "#{suite_status}", :display => :block
       @section.add_section :display => :block
+      last_failed = true
       bullet_width = (detailed_examples.length-1).to_s.length
       detailed_examples.each_with_index do |example, index|
         bullet = "#{index+1}.".rjust(bullet_width+1, " ")
+        @section.add_section :display => :block if (!last_failed && example.failed?)
         @section.add_section :content => example.details(verbosity), :display => :block, :color => color[example.status], :wrap => true, :bullet => bullet
+        @section.add_section :display => :block if example.failed?
+        last_failed = example.failed?
       end
     end
 

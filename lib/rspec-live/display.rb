@@ -6,15 +6,15 @@ module RSpecLive
 
     def initialize
       @terminal = Terminal.new
-      @watcher_display = WatcherDisplay.new(@terminal.add_section :align => :center)
-      @terminal.add_section :display => :block, :content => key_command_info
+      @watcher_display = WatcherDisplay.new(@terminal.add_section :xalign => :center)
+      @terminal.add_section :display => :block, :content => key_command_info, :color => :blue
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
     end
 
     private
 
     def key_command_info
-      "[ A:all | N:next | V:verbosity | R:rerun | Q:quit ]"
+      "Keys: A:show/hide-all N:next V:verbosity R:rerun Q:quit"
     end
   end
 

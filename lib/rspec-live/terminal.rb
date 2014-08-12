@@ -19,6 +19,8 @@ module RSpecLive
         Curses.init_pair color_constant(name), color_constant(name), -1
       end
       @width = `tput cols`.to_i
+      @height = `tput lines`.to_i
+      Curses.resizeterm @height, @width
     end
 
     def self.width

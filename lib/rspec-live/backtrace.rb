@@ -5,10 +5,18 @@ module RSpecLive
     end
 
     def components
-      collapsed_components.map(&:to_s)
+      strip_setup collapsed_components.map(&:to_s)
     end
 
     private
+
+    def strip_setup(text_components)
+      list = text_components.dup
+      while ["gem:ruby", "gem:rspec-core"].include? list.last do
+        list = list[0, list.length-1]
+      end
+      list
+    end
 
     def collapsed_components
       @components.inject([]) do |group, component|

@@ -7,6 +7,12 @@ module RSpecLive
       @display = display
       @example_names = []
       @examples = {}
+      @show_all = false
+    end
+
+    def toggle_all
+      @show_all = !@show_all
+      update_display
     end
 
     def inventory
@@ -36,7 +42,11 @@ module RSpecLive
     end
 
     def update_display
-      @display.show_examples ordered_examples, summary, ordered_examples.select(&:failed?)
+      @display.show_examples ordered_examples, summary, detailed_examples
+    end
+
+    def detailed_examples
+      @show_all ? ordered_examples : ordered_examples.select(&:failed?)
     end
 
     def ordered_examples

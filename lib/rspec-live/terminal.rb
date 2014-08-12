@@ -49,6 +49,7 @@ module RSpecLive
     def add_section(options = {})
       new_section = TerminalSection.new(self, options)
       @children << new_section
+      refresh if options[:content]
       new_section
     end
 

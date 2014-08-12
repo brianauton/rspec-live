@@ -29,6 +29,10 @@ module RSpecLive
       @status == :failed
     end
 
+    def details
+      failed? ? failure_message : "(#{@name})"
+    end
+
     def failure_message
       (backtrace_components + exception_components).compact.join " -> "
     end

@@ -14,7 +14,7 @@ module RSpecLive
     private
 
     def key_command_info
-      "[ R:rerun | Q:quit ]"
+      "[ A:all | R:rerun | Q:quit ]"
     end
   end
 
@@ -33,14 +33,15 @@ module RSpecLive
       @section = section
     end
 
-    def show_examples(examples, suite_status, failed_examples)
+    def show_examples(examples, suite_status, detailed_examples)
       @section.clear
       examples.map(&:status).each do |status|
         @section.add_section :content => character[status], :color => color[status]
       end
       @section.add_section :content => "#{suite_status}", :display => :block
-      failed_examples.each do |example|
-        @section.add_section :content => example.failure_message, :display => :block, :color => :red, :wrap => true
+      detailed_examples.each do |example|
+        color = example.failed? ? :red : (example.passed? ? :green : :yellow )
+        @section.add_section :content => example.details, :display => :block, :color => color, :wrap => true
       end
     end
 

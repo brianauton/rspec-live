@@ -18,6 +18,7 @@ module RSpecLive
 
     def perform_key_command
       key = STDIN.getc.chr.downcase
+      @suite.toggle_all if key == "a"
       return false if key == "q"
       process_tests if key == "r"
       true

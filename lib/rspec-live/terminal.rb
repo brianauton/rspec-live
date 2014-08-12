@@ -3,6 +3,12 @@ require "curses"
 module RSpecLive
   class Terminal
     def initialize
+      reset_curses
+      @root_section = TerminalSection.new
+      Signal.trap("SIGWINCH", proc { reset_curses; @root_section.refresh })
+    end
+
+    def reset_curses
       Curses.init_screen
       Curses.curs_set 0
       Curses.clear
@@ -14,9 +20,12 @@ module RSpecLive
       end
     end
 
+    def self.width
+      `tput cols`.to_i
+    end
+
     def add_section(*args)
-      @root ||= TerminalSection.new
-      @root.add_section(*args)
+      @root_section.add_section(*args)
     end
 
     def self.color_constant(name)
@@ -79,11 +88,11 @@ module RSpecLive
     end
 
     def draw_left_margin
-      Curses.addstr(("=" * (((Curses.cols - @content.length) / 2) - 1)) + " ") if @align == :center
+      Curses.addstr(("=" * (((Terminal.width - @content.length) / 2) - 1)) + " ") if @align == :center
     end
 
     def draw_right_margin
-      Curses.addstr(" " + ("=" * (((Curses.cols - @content.length) / 2) - 2))) if @align == :center
+      Curses.addstr(" " + ("=" * (((Terminal.width - @content.length) / 2) - 2))) if @align == :center
     end
 
     private

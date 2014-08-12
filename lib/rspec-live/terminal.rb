@@ -4,6 +4,7 @@ module RSpecLive
   class Terminal
     def initialize
       Curses.init_screen
+      Curses.curs_set 0
       Curses.clear
       Curses.refresh
       Curses.start_color

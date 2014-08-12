@@ -39,8 +39,10 @@ module RSpecLive
         @section.add_section :content => character[status], :color => color[status]
       end
       @section.add_section :content => "#{suite_status}", :display => :block
-      detailed_examples.each do |example|
-        @section.add_section :content => example.details, :display => :block, :color => color[example.status], :wrap => true
+      bullet_width = (detailed_examples.length-1).to_s.length
+      detailed_examples.each_with_index do |example, index|
+        bullet = "#{index+1}.".rjust(bullet_width+1, "0")
+        @section.add_section :content => example.details, :display => :block, :color => color[example.status], :wrap => true, :bullet => bullet
       end
     end
 

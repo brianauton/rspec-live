@@ -89,6 +89,7 @@ module RSpecLive
 
     def draw_content
       text = @content
+      text = "#{@bullet} #{text}" if @bullet
       text = wrap(text, Terminal.width) if @display == :block && @wrap
       Curses.addstr text
     end

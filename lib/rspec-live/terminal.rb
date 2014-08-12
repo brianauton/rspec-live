@@ -3,12 +3,12 @@ require "curses"
 module RSpecLive
   class Terminal
     def initialize
-      reset_curses
+      Terminal.reset_curses
       @root_section = TerminalSection.new
-      Signal.trap("SIGWINCH", proc { reset_curses; @root_section.refresh })
+      Signal.trap("SIGWINCH", proc { Terminal.reset_curses; @root_section.refresh })
     end
 
-    def reset_curses
+    def self.reset_curses
       Curses.init_screen
       Curses.curs_set 0
       Curses.clear
@@ -16,12 +16,13 @@ module RSpecLive
       Curses.start_color
       Curses.use_default_colors
       available_colors.each do |name|
-        Curses.init_pair Terminal.color_constant(name), Terminal.color_constant(name), -1
+        Curses.init_pair color_constant(name), color_constant(name), -1
       end
+      @width = `tput cols`.to_i
     end
 
     def self.width
-      `tput cols`.to_i
+      @width
     end
 
     def add_section(*args)
@@ -32,9 +33,7 @@ module RSpecLive
       Curses.const_get "COLOR_#{name.to_s.upcase}"
     end
 
-    private
-
-    def available_colors
+    def self.available_colors
       [:blue, :green, :red, :yellow, :white]
     end
   end

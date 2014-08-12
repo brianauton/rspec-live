@@ -89,9 +89,15 @@ module RSpecLive
 
     def draw_content
       text = @content
-      text = "#{@bullet} #{text}" if @bullet
-      text = wrap(text, Terminal.width) if @display == :block && @wrap
+      bullet = @bullet ? "#{@bullet} " : ""
+      if @display == :block && @wrap
+        text = bullet + wrap_with_margin(text, Terminal.width, bullet.length)
+      end
       Curses.addstr text
+    end
+
+    def wrap_with_margin(text, width, margin_width)
+      wrap(text, width - margin_width).split("\n").join("\n" + (" " * margin_width))
     end
 
     def wrap(text, width)

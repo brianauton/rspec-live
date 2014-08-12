@@ -14,7 +14,7 @@ module RSpecLive
     private
 
     def key_command_info
-      "[ A:all | N:next | R:rerun | Q:quit ]"
+      "[ A:all | N:next | V:verbosity | R:rerun | Q:quit ]"
     end
   end
 
@@ -33,7 +33,7 @@ module RSpecLive
       @section = section
     end
 
-    def show_examples(examples, suite_status, detailed_examples)
+    def show_examples(examples, suite_status, detailed_examples, verbosity)
       @section.clear
       @section.add_section :display => :block
       examples.map(&:status).each do |status|
@@ -45,7 +45,7 @@ module RSpecLive
       bullet_width = (detailed_examples.length-1).to_s.length
       detailed_examples.each_with_index do |example, index|
         bullet = "#{index+1}.".rjust(bullet_width+1, " ")
-        @section.add_section :content => example.details, :display => :block, :color => color[example.status], :wrap => true, :bullet => bullet
+        @section.add_section :content => example.details(verbosity), :display => :block, :color => color[example.status], :wrap => true, :bullet => bullet
       end
     end
 

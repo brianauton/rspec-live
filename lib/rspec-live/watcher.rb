@@ -22,6 +22,7 @@ module RSpecLive
       @suite.focus_next if key == "n"
       return false if key == "q"
       reset if key == "r"
+      @suite.cycle_verbosity if key == "v"
       true
     end
 

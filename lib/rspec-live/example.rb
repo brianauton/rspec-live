@@ -29,20 +29,21 @@ module RSpecLive
       @status == :failed
     end
 
-    def details
-      failed? ? failure_message : name_component
+    def details(verbosity)
+      failed? ? failure_message(verbosity) : name_component
     end
 
     def name_component
       "(" + @name.gsub(/^.\//, "") + ")"
     end
 
-    def failure_message
-      ([name_component] + backtrace_components + exception_components).compact.join " -> "
+    def failure_message(verbosity)
+      ([name_component] + backtrace_components(verbosity) + exception_components).compact.join " -> "
     end
 
-    def backtrace_components
-      Backtrace.new(@backtrace).components.reverse.map { |c| "(#{c})" }
+    def backtrace_components(verbosity)
+      return [] if verbosity < 1
+      Backtrace.new(@backtrace, verbosity).components.reverse.map { |c| "(#{c})" }
     end
 
     def exception_components

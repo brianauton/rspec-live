@@ -1,7 +1,7 @@
 module RSpecLive
   class Backtrace
-    def initialize(data)
-      @components = data.map { |text| BacktraceComponent.new text }
+    def initialize(data, verbosity)
+      @components = data.map { |text| BacktraceComponent.new text, verbosity }
     end
 
     def components
@@ -28,8 +28,9 @@ module RSpecLive
   end
 
   class BacktraceComponent
-    def initialize(text)
+    def initialize(text, verbosity)
       @file, @line, @method = text.split(":")
+      @verbosity = verbosity
     end
 
     def to_s
@@ -39,14 +40,26 @@ module RSpecLive
     private
 
     def local_file_reference
-      "#{@file.gsub(/^#{Dir.pwd}\//, "")}:#{@line}" if @file.start_with? Dir.pwd
+      if @file.start_with? Dir.pwd
+        ref = "#{@file.gsub(/^#{Dir.pwd}\//, "")}:#{@line}"
+        ref += ":#{cleaned_method}" if @verbosity > 1
+        ref
+      end
+    end
+
+    def cleaned_method
+      @method.gsub(/^in `/, "").gsub(/'$/, "")
     end
 
     def gem_reference
       if @file.include? "/gems/"
-        gem_parts = @file.split("/gems/").last.split("/").first.split("-")
-        gem_name = gem_parts[0, gem_parts.length - 1].join("-")
-        "gem:#{gem_name}"
+        local_reference = @file.split("/gems/").last
+        path = local_reference.gsub(/^\/*/, "")
+        gem_name_parts = local_reference.split("/").first.split("-")
+        gem_name = gem_name_parts[0, gem_name_parts.length - 1].join("-")
+        ref = "gem:#{gem_name}"
+        ref += "/#{path}:#{@line}:#{cleaned_method}" if @verbosity > 2
+        ref
       end
     end
   end

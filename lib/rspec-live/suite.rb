@@ -8,6 +8,7 @@ module RSpecLive
       @example_names = []
       @examples = {}
       @show_all = false
+      @verbosity = 1
     end
 
     def toggle_all
@@ -39,6 +40,11 @@ module RSpecLive
       @examples.each_value { |example| example.status = :unknown }
     end
 
+    def cycle_verbosity
+      @verbosity = (@verbosity + 1) % 4
+      update_display
+    end
+
     private
 
     def next_visible(name)
@@ -54,7 +60,7 @@ module RSpecLive
     end
 
     def update_display
-      @display.show_examples ordered_examples, summary, detailed_examples
+      @display.show_examples ordered_examples, summary, detailed_examples, @verbosity
     end
 
     def detailed_examples

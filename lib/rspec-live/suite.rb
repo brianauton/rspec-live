@@ -35,7 +35,7 @@ module RSpecLive
     def update_or_create_example(data)
       name = data["name"]
       @example_names << name unless @example_names.include? name
-      @example_names.sort!
+      sort_example_names
       @examples[name] ||= Example.new
       @examples[name].update data
       @examples[name]
@@ -51,6 +51,14 @@ module RSpecLive
 
     def ordered_examples
       @example_names.map { |name| @examples[name] }
+    end
+
+    def sort_example_names
+      @example_names.sort_by! do |name|
+        file, line = name.split(":")
+        line = line.rjust(8, "0")
+        [file, line].join(":")
+      end
     end
 
     def summary

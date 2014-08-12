@@ -5,7 +5,17 @@ module RSpecLive
     end
 
     def components
-      @components.map(&:abbreviated_text)
+      collapsed_components.map(&:to_s)
+    end
+
+    private
+
+    def collapsed_components
+      @components.inject([]) do |group, component|
+        group.dup.tap do |new_group|
+          new_group << component unless group.last && (group.last.to_s == component.to_s)
+        end
+      end
     end
   end
 
@@ -14,10 +24,9 @@ module RSpecLive
       @file, @line, @method = text.split(":")
     end
 
-    def abbreviated_text
+    def to_s
       if @file.start_with? Dir.pwd
-        @file = @file.gsub(/^#{Dir.pwd}\//, "")
-        "#{@file}:#{@line}"
+        "#{@file.gsub(/^#{Dir.pwd}\//, "")}:#{@line}"
       elsif @file.include? "/gems/"
         @file.split("/gems/").last.split("/").first
       else

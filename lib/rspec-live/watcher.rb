@@ -21,8 +21,13 @@ module RSpecLive
       @suite.toggle_all if key == "a"
       @suite.focus_next if key == "n"
       return false if key == "q"
-      process_tests if key == "r"
+      reset if key == "r"
       true
+    end
+
+    def reset
+      @suite.clear_status
+      process_tests
     end
 
     def process_tests

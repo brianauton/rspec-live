@@ -35,6 +35,10 @@ module RSpecLive
       update_display
     end
 
+    def clear_status
+      @examples.each_value { |example| example.status = :unknown }
+    end
+
     private
 
     def next_visible(name)

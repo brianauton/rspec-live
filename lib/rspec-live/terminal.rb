@@ -68,12 +68,22 @@ module RSpecLive
 
     def draw
       Curses.addstr "\n\n" if @display == :block
+      draw_left_margin
       if @color
         Curses.attron(color_attribute @color) { Curses.addstr @content }
       else
         Curses.addstr @content
       end
+      draw_right_margin
       @children.each(&:draw)
+    end
+
+    def draw_left_margin
+      Curses.addstr(("=" * (((Curses.cols - @content.length) / 2) - 1)) + " ") if @align == :center
+    end
+
+    def draw_right_margin
+      Curses.addstr(" " + ("=" * (((Curses.cols - @content.length) / 2) - 2))) if @align == :center
     end
 
     private

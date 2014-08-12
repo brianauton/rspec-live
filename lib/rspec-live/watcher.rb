@@ -21,7 +21,7 @@ module RSpecLive
       @suite.inventory
       @display.status = "running specs"
       @suite.update
-      @display.status = "waiting for updates"
+      @display.status = "watching for updates..."
     end
   end
 end

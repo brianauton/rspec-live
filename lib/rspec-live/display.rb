@@ -6,7 +6,7 @@ module RSpecLive
 
     def initialize
       @terminal = Terminal.new
-      @watcher_display = WatcherDisplay.new(@terminal.add_section)
+      @watcher_display = WatcherDisplay.new(@terminal.add_section :align => :center)
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
     end
   end
@@ -17,8 +17,7 @@ module RSpecLive
     end
 
     def status=(status)
-      version = RSpecLive::VERSION
-      @section.content = "RSpec Live #{version} [#{status}]"
+      @section.content = "RSpec summary for #{File.basename Dir.pwd} (#{status})"
     end
   end
 

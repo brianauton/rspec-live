@@ -33,7 +33,7 @@ module RSpecLive
       end
       @section.add_section :content => "#{suite_status}", :display => :block
       failed_examples.each do |example|
-        @section.add_section :content => example.failure_message, :display => :block, :color => :red
+        @section.add_section :content => example.failure_message, :display => :block, :color => :red, :wrap => true
       end
     end
 

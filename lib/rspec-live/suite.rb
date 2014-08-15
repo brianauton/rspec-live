@@ -25,7 +25,7 @@ module RSpecLive
     end
 
     def update
-      @runner.update do |example_data|
+      @runner.update(@example_names) do |example_data|
         update_or_create_example example_data
         update_display
       end
@@ -43,6 +43,14 @@ module RSpecLive
     def cycle_verbosity
       @verbosity = (@verbosity + 1) % 4
       update_display
+    end
+
+    def files_touched(names)
+      @examples.values.each { |example| example.files_touched names }
+    end
+
+    def stale_example_names
+      @example_names.select { |name| @examples[name].stale? }
     end
 
     private

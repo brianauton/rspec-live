@@ -7,8 +7,8 @@ module RSpecLive
       run "inventory", "--dry-run", &block
     end
 
-    def update(&block)
-      run "update", &block
+    def update(example_names = [], &block)
+      run "update", example_names.join(" "), &block
     end
 
     private

@@ -15,6 +15,7 @@ module RSpecLive
       @status = data["status"].to_sym if data["status"]
       @backtrace = data["backtrace"] if data["backtrace"]
       @message = data["message"] if data["message"]
+      @files_touched = data["files_touched"] || []
     end
 
     def status=(value)
@@ -27,6 +28,10 @@ module RSpecLive
 
     def failed?
       @status == :failed
+    end
+
+    def stale?
+      @status == :unknown
     end
 
     def details(verbosity)
@@ -48,6 +53,10 @@ module RSpecLive
 
     def exception_components
       [@message.gsub("\n", " ").strip.inspect]
+    end
+
+    def files_touched(names)
+      names.each { |name| @status = :unknown if @files_touched.include? name }
     end
   end
 end

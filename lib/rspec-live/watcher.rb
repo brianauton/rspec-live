@@ -8,8 +8,12 @@ module RSpecLive
     end
 
     def start
-      process_tests
-      Listen.to(Dir.pwd) { process_tests }.start
+      reset
+      Listen.to(Dir.pwd) do |updated, added, removed|
+        @suite.files_touched(updated + removed)
+        inventory if added.any? || removed.any?
+        update
+      end.start
       while perform_key_command; end
     rescue Interrupt
     end
@@ -28,13 +32,17 @@ module RSpecLive
 
     def reset
       @suite.clear_status
-      process_tests
+      inventory
+      update
     end
 
-    def process_tests
+    def inventory
       @display.status = "analyzing specs"
       @suite.inventory
-      @display.status = "running specs"
+    end
+
+    def update
+      @display.status = "running #{@suite.stale_example_names.count} specs"
       @suite.update
       @display.status = "watching for updates..."
     end

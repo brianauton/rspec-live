@@ -1,48 +1,42 @@
+require File.join(File.dirname(__FILE__), "coverage_analyzer")
 require "json"
 
 class UpdateFormatter
   RSpec::Core::Formatters.register self, :example_passed, :example_failed, :example_pending
-  RSpec.configure do |c|
-    c.around(:example) do |example|
-      example.metadata[:files_touched] = {}
-      set_trace_func proc { |event, file| example.metadata[:files_touched][file] = true }
-      example.run
-      set_trace_func nil
-    end
-  end
+  CoverageAnalyzer.install
 
   def initialize(output)
     @output = output
   end
 
   def example_passed(notification)
-    report notification, "passed"
+    report notification.example, "passed"
   end
 
   def example_failed(notification)
-    report notification, "failed", {
+    report notification.example, "failed", {
       :backtrace => notification.exception.backtrace,
       :message => notification.exception.message,
     }
   end
 
   def example_pending(notification)
-    report notification, "pending"
+    report notification.example, "pending"
   end
 
   private
 
-  def report(notification, status, options = {})
+  def report(example, status, options = {})
     data = {
-      :name => notification.example.location,
+      :name => example.location,
       :status => status,
-      :files_touched => filtered_files_touched(notification),
+      :files_touched => filtered_files_touched(example),
     }
     @output << "#{JSON.unparse data.merge(options)}\n"
   end
 
-  def filtered_files_touched(notification)
-    raw_files = notification.example.metadata[:files_touched].keys
+  def filtered_files_touched(example)
+    raw_files = example.metadata[:files_touched].keys
     raw_files.select { |file| file.start_with? Dir.pwd }
   end
 end

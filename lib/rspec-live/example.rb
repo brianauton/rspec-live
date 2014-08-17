@@ -58,5 +58,15 @@ module RSpecLive
     def files_touched(names)
       names.each { |name| @status = :unknown if @files_touched.include? name }
     end
+
+    def in_file?(filename)
+      absolute_path == filename
+    end
+
+    private
+
+    def absolute_path
+      @name.split(":").first.gsub(/^\./, Dir.pwd)
+    end
   end
 end

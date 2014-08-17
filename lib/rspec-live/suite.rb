@@ -49,6 +49,15 @@ module RSpecLive
       @examples.values.each { |example| example.files_touched names }
     end
 
+    def files_removed(files)
+      @examples.delete_if do |name, example|
+        files.any? {|f| example.in_file? f }
+      end
+      @example_names = @examples.keys
+      sort_example_names
+      update_display
+    end
+
     def stale_example_names
       @example_names.select { |name| @examples[name].stale? }
     end

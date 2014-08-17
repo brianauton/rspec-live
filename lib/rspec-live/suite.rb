@@ -5,7 +5,6 @@ module RSpecLive
     def initialize(runner, display)
       @runner = runner
       @display = display
-      @example_names = []
       @examples = {}
       @show_all = false
       @verbosity = 1
@@ -17,15 +16,14 @@ module RSpecLive
     end
 
     def inventory
-      @example_names = []
       @runner.inventory do |example_data|
-        update_or_create_example example_data
+        @examples[example_data["name"]] ||= Example.new
         update_display
       end
     end
 
     def update
-      @runner.update(@example_names) do |example_data|
+      @runner.update(example_names) do |example_data|
         update_or_create_example example_data
         update_display
       end
@@ -53,13 +51,11 @@ module RSpecLive
       @examples.delete_if do |name, example|
         files.any? {|f| example.in_file? f }
       end
-      @example_names = @examples.keys
-      sort_example_names
       update_display
     end
 
-    def stale_example_names
-      @example_names.select { |name| @examples[name].stale? }
+    def stale_example_count
+      @examples.values.select(&:stale?).count
     end
 
     private
@@ -69,8 +65,6 @@ module RSpecLive
 
     def update_or_create_example(data)
       name = data["name"]
-      @example_names << name unless @example_names.include? name
-      sort_example_names
       @examples[name] ||= Example.new
       @examples[name].update data
       @examples[name]
@@ -83,18 +77,22 @@ module RSpecLive
     def detailed_examples
       all = ordered_examples
       if @focused
-        index = @example_names.index(@focused) || 0
+        index = ordered_example_names.index(@focused) || 0
         all = all[index, all.length-index] + all[0, index]
       end
       @show_all ? all : all.select(&:failed?)
     end
 
     def ordered_examples
-      @example_names.map { |name| @examples[name] }
+      ordered_example_names.map { |name| @examples[name] }
     end
 
-    def sort_example_names
-      @example_names.sort_by! do |name|
+    def example_names
+      @examples.keys
+    end
+
+    def ordered_example_names
+      example_names.sort_by do |name|
         file, line = name.split(":")
         line = line.rjust(8, "0")
         [file, line].join(":")

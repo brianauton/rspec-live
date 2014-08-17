@@ -43,7 +43,7 @@ module RSpecLive
     end
 
     def update
-      @display.status = "running #{@suite.stale_example_names.count} specs"
+      @display.status = "running #{@suite.stale_example_count} specs"
       @suite.update
       @display.status = "watching for updates..."
     end

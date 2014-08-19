@@ -5,5 +5,6 @@ require "rspec-live/watcher"
 require "rspec-live/display"
 
 display = RSpecLive::Display.new
-suite = RSpecLive::Suite.new(RSpecLive::Runner.new, display.suite_display)
-RSpecLive::Watcher.new(suite, display.watcher_display).start
+runner = RSpecLive::Runner.new(display.runner_display)
+suite = RSpecLive::Suite.new(runner, display.suite_display)
+RSpecLive::Watcher.new(suite).start

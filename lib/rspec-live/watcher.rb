@@ -2,9 +2,8 @@ require "listen"
 
 module RSpecLive
   class Watcher
-    def initialize(suite, display)
+    def initialize(suite)
       @suite = suite
-      @display = display
     end
 
     def start
@@ -38,14 +37,11 @@ module RSpecLive
     end
 
     def inventory
-      @display.status = "analyzing specs"
       @suite.inventory
     end
 
     def update
-      @display.status = "running #{@suite.stale_example_count} specs"
       @suite.update
-      @display.status = "watching for updates..."
     end
   end
 end

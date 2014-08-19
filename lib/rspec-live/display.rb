@@ -2,11 +2,11 @@ require "rspec-live/terminal"
 
 module RSpecLive
   class Display
-    attr_reader :watcher_display, :suite_display
+    attr_reader :runner_display, :suite_display
 
     def initialize
       @terminal = Terminal.new
-      @watcher_display = WatcherDisplay.new(@terminal.add_section :xalign => :center)
+      @runner_display = RunnerDisplay.new(@terminal.add_section :xalign => :center)
       @terminal.add_section :display => :block, :content => key_command_info, :color => :blue
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
     end
@@ -18,7 +18,7 @@ module RSpecLive
     end
   end
 
-  class WatcherDisplay
+  class RunnerDisplay
     def initialize(section)
       @section = section
     end

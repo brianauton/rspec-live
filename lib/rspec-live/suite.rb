@@ -23,7 +23,7 @@ module RSpecLive
     end
 
     def update
-      @runner.update(example_names) do |example_data|
+      @runner.update(stale_example_names) do |example_data|
         update_or_create_example example_data
         update_display
       end
@@ -58,10 +58,11 @@ module RSpecLive
       @examples.values.select(&:stale?).count
     end
 
-    private
-
-    def next_visible(name)
+    def stale_example_names
+      @examples.values.select(&:stale?).map(&:name)
     end
+
+    private
 
     def update_or_create_example(data)
       name = data["name"]

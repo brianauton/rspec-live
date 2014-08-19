@@ -1,5 +1,6 @@
 require "listen"
 require "rspec-live/key_handler"
+require "rspec-live/file_watcher"
 
 module RSpecLive
   class Watcher
@@ -10,11 +11,7 @@ module RSpecLive
 
     def start
       reset
-      Listen.to(Dir.pwd) do |updated, added, removed|
-        @suite.files_updated updated if updated.any?
-        @suite.files_removed removed if removed.any?
-        @suite.files_added added if added.any?
-      end.start
+      file_watcher.notify @suite
       key_handler.listen while !@quit
     end
 
@@ -28,6 +25,10 @@ module RSpecLive
         handler.on("r") { reset }
         handler.on("v") { @suite.cycle_verbosity }
       end
+    end
+
+    def file_watcher
+      @file_watcher ||= FileWatcher.new(Dir.pwd)
     end
 
     def reset

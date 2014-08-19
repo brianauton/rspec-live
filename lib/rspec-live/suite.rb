@@ -43,15 +43,21 @@ module RSpecLive
       update_display
     end
 
-    def files_touched(names)
-      @examples.values.each { |example| example.files_touched names }
+    def files_updated(paths)
+      @examples.values.each { |example| example.files_touched paths }
+      update
     end
 
-    def files_removed(files)
+    def files_removed(paths)
       @examples.delete_if do |name, example|
-        files.any? {|f| example.in_file? f }
+        paths.any? {|path| example.in_file? path }
       end
-      update_display
+      files_updated paths
+    end
+
+    def files_added(paths)
+      inventory
+      update
     end
 
     def stale_example_count

@@ -11,10 +11,9 @@ module RSpecLive
     def start
       reset
       Listen.to(Dir.pwd) do |updated, added, removed|
-        @suite.files_touched(updated + removed)
-        @suite.files_removed removed
-        @suite.inventory if added.any?
-        @suite.update
+        @suite.files_updated updated if updated.any?
+        @suite.files_removed removed if removed.any?
+        @suite.files_added added if added.any?
       end.start
       key_handler.listen while !@quit
     end

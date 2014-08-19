@@ -4,12 +4,19 @@ module RSpecLive
       @event = {}
     end
 
-    def on(key, &block)
-      @event[key] = block
+    def on(*keys, &block)
+      keys.each { |key| @event[key] = block }
     end
 
     def listen
-      key = STDIN.getc.chr.downcase
+      handle STDIN.getc.chr.downcase
+    rescue Interrupt
+      handle :interrupt
+    end
+
+    private
+
+    def handle(key)
       @event[key].call if @event[key]
     end
   end

@@ -17,8 +17,6 @@ module RSpecLive
         @suite.update
       end.start
       key_handler.listen while !@quit
-    rescue Interrupt
-      @quit = true
     end
 
     private
@@ -27,7 +25,7 @@ module RSpecLive
       @key_handler ||= KeyHandler.new.tap do |handler|
         handler.on("a") { @suite.toggle_all }
         handler.on("n") { @suite.focus_next }
-        handler.on("q") { @quit = true }
+        handler.on("q", :interrupt) { @quit = true }
         handler.on("r") { reset }
         handler.on("v") { @suite.cycle_verbosity }
       end

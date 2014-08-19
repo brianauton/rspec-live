@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 require "rspec-live/suite"
 require "rspec-live/runner"
-require "rspec-live/watcher"
+require "rspec-live/monitor"
 require "rspec-live/display"
 
 display = RSpecLive::Display.new
 runner = RSpecLive::Runner.new(display.runner_display)
 suite = RSpecLive::Suite.new(runner, display.suite_display)
-RSpecLive::Watcher.new(suite).start
+RSpecLive::Monitor.new(suite).start

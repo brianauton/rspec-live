@@ -3,7 +3,7 @@ require "rspec-live/key_handler"
 require "rspec-live/file_watcher"
 
 module RSpecLive
-  class Watcher
+  class Monitor
     def initialize(suite)
       @suite = suite
       @quit = false

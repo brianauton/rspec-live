@@ -11,8 +11,8 @@ module RSpecLive
       Listen.to(Dir.pwd) do |updated, added, removed|
         @suite.files_touched(updated + removed)
         @suite.files_removed removed
-        inventory if added.any?
-        update
+        @suite.inventory if added.any?
+        @suite.update
       end.start
       while perform_key_command; end
     rescue Interrupt
@@ -32,15 +32,7 @@ module RSpecLive
 
     def reset
       @suite.clear_status
-      inventory
-      update
-    end
-
-    def inventory
       @suite.inventory
-    end
-
-    def update
       @suite.update
     end
   end

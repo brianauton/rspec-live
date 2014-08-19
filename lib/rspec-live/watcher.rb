@@ -1,9 +1,11 @@
 require "listen"
+require "rspec-live/key_handler"
 
 module RSpecLive
   class Watcher
     def initialize(suite)
       @suite = suite
+      @quit = false
     end
 
     def start
@@ -14,20 +16,21 @@ module RSpecLive
         @suite.inventory if added.any?
         @suite.update
       end.start
-      while perform_key_command; end
+      key_handler.listen while !@quit
     rescue Interrupt
+      @quit = true
     end
 
     private
 
-    def perform_key_command
-      key = STDIN.getc.chr.downcase
-      @suite.toggle_all if key == "a"
-      @suite.focus_next if key == "n"
-      return false if key == "q"
-      reset if key == "r"
-      @suite.cycle_verbosity if key == "v"
-      true
+    def key_handler
+      @key_handler ||= KeyHandler.new.tap do |handler|
+        handler.on("a") { @suite.toggle_all }
+        handler.on("n") { @suite.focus_next }
+        handler.on("q") { @quit = true }
+        handler.on("r") { reset }
+        handler.on("v") { @suite.cycle_verbosity }
+      end
     end
 
     def reset

@@ -12,7 +12,10 @@ module RSpecLive
     def start
       reset
       file_watcher.notify @suite
-      key_handler.listen while !@quit
+      while !@quit do
+        key_handler.handle_key_if_available
+        sleep 0.05
+      end
     end
 
     private

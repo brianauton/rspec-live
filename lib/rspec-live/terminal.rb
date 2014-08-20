@@ -27,8 +27,8 @@ module RSpecLive
       @width
     end
 
-    def add_section(*args)
-      @root_section.add_section(*args)
+    def add_section(*args, &block)
+      @root_section.add_section(*args, &block)
     end
 
     def self.color_constant(name)
@@ -41,15 +41,15 @@ module RSpecLive
   end
 
   class TerminalSection
-    def initialize(parent = nil, options = {})
-      @content = ""
+    def initialize(parent = nil, options = {}, &block)
+      @content = block || ""
       @parent = parent
       options.each_pair { |key, value| instance_variable_set "@#{key}", value }
       @children = []
     end
 
-    def add_section(options = {})
-      new_section = TerminalSection.new(self, options)
+    def add_section(options = {}, &block)
+      new_section = TerminalSection.new(self, options, &block)
       @children << new_section
       new_section
     end
@@ -88,7 +88,7 @@ module RSpecLive
     end
 
     def draw_content
-      text = @content
+      text = @content.is_a?(Proc) ? @content.call : @content
       bullet = @bullet ? "#{@bullet} " : ""
       if @display == :block && @wrap
         text = bullet + wrap_with_margin(text, Terminal.width-1, bullet.length)

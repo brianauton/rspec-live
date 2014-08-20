@@ -18,8 +18,8 @@ module RSpecLive
     def inventory
       @runner.inventory do |example_data|
         @examples[example_data["name"]] ||= Example.new
-        update_display
       end
+      update_display
     end
 
     def update
@@ -27,6 +27,7 @@ module RSpecLive
         update_or_create_example example_data
         update_display
       end
+      update_display
     end
 
     def focus_next

@@ -3,19 +3,21 @@ require "json"
 
 module RSpecLive
   class Runner
-    def initialize(display)
-      @display = display
+    attr_reader :status
+
+    def initialize
+      @status = ""
     end
 
     def inventory(&block)
-      @display.status = "analyzing specs"
+      @status = "analyzing specs"
       run "inventory", "--dry-run", &block
     end
 
     def update(example_names = [], &block)
-      @display.status = "running #{example_names.count} specs"
+      @status = "running #{example_names.count} specs"
       run "update", example_names.join(" "), &block
-      @display.status = "watching for updates..."
+      @status = "watching for updates..."
     end
 
     private

@@ -4,9 +4,9 @@ module RSpecLive
   class Display
     attr_reader :runner_display, :suite_display
 
-    def initialize
+    def initialize(runner)
       @terminal = Terminal.new
-      @runner_display = RunnerDisplay.new(@terminal.add_section :xalign => :center)
+      @runner_display = RunnerDisplay.new(runner, @terminal)
       @terminal.add_section :display => :block, :content => key_command_info, :color => :blue
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
     end
@@ -19,13 +19,10 @@ module RSpecLive
   end
 
   class RunnerDisplay
-    def initialize(section)
-      @section = section
-    end
-
-    def status=(status)
-      @section.content = "RSpec summary for #{File.basename Dir.pwd} (#{status})"
-      @section.refresh
+    def initialize(runner, parent_display)
+      @section = parent_display.add_section do
+        "RSpec summary for #{File.basename Dir.pwd} (#{runner.status})"
+      end
     end
   end
 

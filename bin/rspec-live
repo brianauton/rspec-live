@@ -4,7 +4,7 @@ require "rspec-live/runner"
 require "rspec-live/monitor"
 require "rspec-live/display"
 
-display = RSpecLive::Display.new
-runner = RSpecLive::Runner.new(display.runner_display)
+runner = RSpecLive::Runner.new
+display = RSpecLive::Display.new(runner)
 suite = RSpecLive::Suite.new(runner, display.suite_display)
 RSpecLive::Monitor.new(suite).start

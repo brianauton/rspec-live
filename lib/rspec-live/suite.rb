@@ -60,10 +60,6 @@ module RSpecLive
       update
     end
 
-    def stale_example_count
-      @examples.values.select(&:stale?).count
-    end
-
     def stale_example_names
       @examples.values.select(&:stale?).map(&:name)
     end

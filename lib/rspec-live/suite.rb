@@ -4,9 +4,8 @@ module RSpecLive
   class Suite
     attr_reader :verbosity
 
-    def initialize(runner, display)
+    def initialize(runner)
       @runner = runner
-      @display = display
       @examples = {}
       @show_all = false
       @verbosity = 1
@@ -14,27 +13,22 @@ module RSpecLive
 
     def toggle_all
       @show_all = !@show_all
-      update_display
     end
 
     def inventory
       @runner.inventory do |example_data|
         @examples[example_data["name"]] ||= Example.new
       end
-      update_display
     end
 
     def update
       @runner.update(stale_example_names) do |example_data|
         update_or_create_example example_data
-        update_display
       end
-      update_display
     end
 
     def focus_next
       @focused = detailed_examples[1].name if detailed_examples[1]
-      update_display
     end
 
     def clear_status
@@ -43,7 +37,6 @@ module RSpecLive
 
     def cycle_verbosity
       @verbosity = (@verbosity + 1) % 4
-      update_display
     end
 
     def files_updated(paths)
@@ -94,9 +87,6 @@ module RSpecLive
       @examples[name] ||= Example.new
       @examples[name].update data
       @examples[name]
-    end
-
-    def update_display
     end
 
     def example_names

@@ -6,5 +6,5 @@ require "rspec-live/display"
 
 runner = RSpecLive::Runner.new
 display = RSpecLive::Display.new(runner)
-suite = RSpecLive::Suite.new(runner, display.suite_display)
+suite = RSpecLive::Suite.new(runner, display)
 RSpecLive::Monitor.new(suite).start

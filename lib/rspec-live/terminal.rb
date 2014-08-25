@@ -5,7 +5,7 @@ module RSpecLive
     def initialize
       Terminal.reset_curses
       @root_section = TerminalSection.new
-      Signal.trap("SIGWINCH", proc { Terminal.reset_curses; @root_section.refresh })
+      Signal.trap("SIGWINCH", proc { Terminal.reset_curses; refresh })
     end
 
     def self.reset_curses
@@ -37,6 +37,10 @@ module RSpecLive
 
     def self.available_colors
       [:blue, :green, :red, :yellow, :white]
+    end
+
+    def refresh
+      @root_section.refresh
     end
   end
 

@@ -2,6 +2,8 @@ require "rspec-live/example"
 
 module RSpecLive
   class Suite
+    attr_reader :verbosity
+
     def initialize(runner, display)
       @runner = runner
       @display = display
@@ -65,6 +67,26 @@ module RSpecLive
       @examples.values.select(&:stale?).map(&:name)
     end
 
+    def detailed_examples
+      all = ordered_examples
+      if @focused
+        index = ordered_example_names.index(@focused) || 0
+        all = all[index, all.length-index] + all[0, index]
+      end
+      @show_all ? all : all.select(&:failed?)
+    end
+
+    def summary
+      passed = ordered_examples.select(&:passed?).length
+      total = ordered_examples.length
+      percent = (100*passed/total.to_f).round
+      "#{passed} of #{total} examples passed (#{percent}%)"
+    end
+
+    def ordered_examples
+      ordered_example_names.map { |name| @examples[name] }
+    end
+
     private
 
     def update_or_create_example(data)
@@ -75,20 +97,7 @@ module RSpecLive
     end
 
     def update_display
-      @display.show_examples ordered_examples, summary, detailed_examples, @verbosity
-    end
-
-    def detailed_examples
-      all = ordered_examples
-      if @focused
-        index = ordered_example_names.index(@focused) || 0
-        all = all[index, all.length-index] + all[0, index]
-      end
-      @show_all ? all : all.select(&:failed?)
-    end
-
-    def ordered_examples
-      ordered_example_names.map { |name| @examples[name] }
+      @display.update self
     end
 
     def example_names
@@ -101,13 +110,6 @@ module RSpecLive
         line = line.rjust(8, "0")
         [file, line].join(":")
       end
-    end
-
-    def summary
-      passed = ordered_examples.select(&:passed?).length
-      total = ordered_examples.length
-      percent = (100*passed/total.to_f).round
-      "#{passed} of #{total} examples passed (#{percent}%)"
     end
   end
 end

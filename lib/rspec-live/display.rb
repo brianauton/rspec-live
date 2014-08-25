@@ -11,6 +11,11 @@ module RSpecLive
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
     end
 
+    def update(suite)
+      @suite_display.show_examples suite.ordered_examples, suite.summary, suite.detailed_examples, suite.verbosity
+      @terminal.refresh
+    end
+
     private
 
     def key_command_info

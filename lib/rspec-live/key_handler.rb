@@ -15,6 +15,10 @@ module RSpecLive
       handle :interrupt
     end
 
+    def on_update(&block)
+      @update_listener = block
+    end
+
     private
 
     def get_character_if_available
@@ -25,7 +29,10 @@ module RSpecLive
     end
 
     def handle(key)
-      @event[key].call if @event[key]
+      if @event[key]
+        @event[key].call
+        @update_listener.call if @update_listener
+      end
     end
   end
 end

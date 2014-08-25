@@ -4,12 +4,16 @@ require "rspec-live/file_watcher"
 
 module RSpecLive
   class Monitor
-    def initialize(suite)
+    def initialize(suite, runner, display)
       @suite = suite
+      @runner = runner
+      @display = display
       @quit = false
     end
 
     def start
+      @runner.on_update { @display.update @suite }
+      key_handler.on_update { @display.update @suite }
       reset
       file_watcher.notify @suite
       while !@quit do

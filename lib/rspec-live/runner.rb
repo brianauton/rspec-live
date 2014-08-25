@@ -18,6 +18,11 @@ module RSpecLive
       @status = "running #{example_names.count} specs"
       run "update", example_names.join(" "), &block
       @status = "watching for updates..."
+      @update_listener.call if @update_listener
+    end
+
+    def on_update(&block)
+      @update_listener = block
     end
 
     private
@@ -27,6 +32,7 @@ module RSpecLive
         begin
           stdin.each do |line|
             block.call JSON.parse line
+            @update_listener.call if @update_listener
           end
         rescue Errno::EIO
         end

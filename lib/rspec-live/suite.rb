@@ -97,7 +97,6 @@ module RSpecLive
     end
 
     def update_display
-      @display.update self
     end
 
     def example_names

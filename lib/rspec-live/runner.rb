@@ -21,6 +21,9 @@ module RSpecLive
       @update_listener.call if @update_listener
     end
 
+    def poll
+    end
+
     def on_update(&block)
       @update_listener = block
     end

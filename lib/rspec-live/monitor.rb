@@ -12,17 +12,22 @@ module RSpecLive
     end
 
     def start
-      @runner.on_update { @display.update @suite }
-      key_handler.on_update { @display.update @suite }
+      services.each do |service|
+        service.on_update { @display.update @suite }
+      end
       reset
       file_watcher.notify @suite
       while !@quit do
-        key_handler.handle_key_if_available
+        services.each(&:poll)
         sleep 0.05
       end
     end
 
     private
+
+    def services
+      [key_handler, file_watcher, @runner]
+    end
 
     def key_handler
       @key_handler ||= KeyHandler.new.tap do |handler|

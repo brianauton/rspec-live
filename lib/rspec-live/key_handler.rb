@@ -8,7 +8,7 @@ module RSpecLive
       keys.each { |key| @event[key] = block }
     end
 
-    def handle_key_if_available
+    def poll
       key = get_character_if_available
       handle key if key
     rescue Interrupt

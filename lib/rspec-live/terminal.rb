@@ -81,13 +81,11 @@ module RSpecLive
 
     def draw
       Curses.addstr "\n" if @display == :block
-      draw_left_margin
       if @color
         Curses.attron(color_attribute @color) { draw_content }
       else
         draw_content
       end
-      draw_right_margin
       @children.each(&:draw)
     end
 
@@ -106,14 +104,6 @@ module RSpecLive
 
     def wrap(text, width)
       text.scan(/\S.{0,#{width-2}}\S(?=\s|$)|\S+/).join("\n")
-    end
-
-    def draw_left_margin
-      Curses.addstr(("=" * [0, (((Terminal.width - @content.length) / 2) - 1)].max) + " ") if @align == :center
-    end
-
-    def draw_right_margin
-      Curses.addstr(" " + ("=" * [0, (((Terminal.width - @content.length) / 2) - 2)].max)) if @align == :center
     end
 
     private

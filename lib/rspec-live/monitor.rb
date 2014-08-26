@@ -15,8 +15,7 @@ module RSpecLive
       services.each do |service|
         service.on_update { @display.update @suite }
       end
-      reset
-      file_watcher.notify @suite
+      @suite.reset
       while !@quit do
         services.each(&:poll)
         sleep 0.05
@@ -34,19 +33,13 @@ module RSpecLive
         handler.on("a") { @suite.toggle_all }
         handler.on("n") { @suite.focus_next }
         handler.on("q", :interrupt) { @quit = true }
-        handler.on("r") { reset }
+        handler.on("r") { @suite.reset }
         handler.on("v") { @suite.cycle_verbosity }
       end
     end
 
     def file_watcher
-      @file_watcher ||= FileWatcher.new(Dir.pwd)
-    end
-
-    def reset
-      @suite.clear_status
-      @suite.inventory
-      @suite.update
+      @file_watcher ||= FileWatcher.new(Dir.pwd, @suite)
     end
   end
 end

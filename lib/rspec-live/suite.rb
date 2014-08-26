@@ -80,6 +80,12 @@ module RSpecLive
       ordered_example_names.map { |name| @examples[name] }
     end
 
+    def reset
+      clear_status
+      inventory
+      update
+    end
+
     private
 
     def update_or_create_example(data)

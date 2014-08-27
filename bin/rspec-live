@@ -3,8 +3,10 @@ require "rspec-live/suite"
 require "rspec-live/runner"
 require "rspec-live/monitor"
 require "rspec-live/display"
+require "rspec-live/result_detail"
 
 runner = RSpecLive::Runner.new
-display = RSpecLive::Display.new(runner)
 suite = RSpecLive::Suite.new(runner)
-RSpecLive::Monitor.new(suite, runner, display).start
+detail = RSpecLive::ResultDetail.new(suite)
+display = RSpecLive::Display.new(runner, detail)
+RSpecLive::Monitor.new(suite, runner, display, detail).start

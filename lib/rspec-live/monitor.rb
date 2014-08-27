@@ -1,13 +1,15 @@
 require "listen"
 require "rspec-live/key_handler"
 require "rspec-live/file_watcher"
+require "rspec-live/result_detail"
 
 module RSpecLive
   class Monitor
-    def initialize(suite, runner, display)
+    def initialize(suite, runner, display, detail)
       @suite = suite
       @runner = runner
       @display = display
+      @detail = detail
       @quit = false
     end
 
@@ -30,11 +32,11 @@ module RSpecLive
 
     def key_handler
       @key_handler ||= KeyHandler.new.tap do |handler|
-        handler.on("a") { @suite.toggle_all }
-        handler.on("n") { @suite.focus_next }
+        handler.on("a") { @detail.toggle_all }
+        handler.on("n") { @detail.focus_next }
         handler.on("q", :interrupt) { @quit = true }
         handler.on("r") { @suite.reset }
-        handler.on("v") { @suite.cycle_verbosity }
+        handler.on("v") { @detail.cycle_verbosity }
       end
     end
 

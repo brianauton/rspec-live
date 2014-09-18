@@ -9,17 +9,16 @@ module RSpecLive
       keys.each { |key| @event[key] = block }
     end
 
-    def updates_available?
+    def process_updates
       while key = get_character_if_available
         @keys_received << key
       end
-      @keys_received.any?
-    end
-
-    def process_updates
+      any_processed = false
       while @keys_received.any?
         handle @keys_received.shift
+        any_processed = true
       end
+      any_processed
     end
 
     private

@@ -12,20 +12,26 @@ module RSpecLive
       @examples.each_value { |example| example.status = :unknown }
     end
 
-    def updates_available?
-      @file_watcher.updates_available? || @runner.updates_available?
-    end
-
     def process_updates
+      any_processed = false
       @file_watcher.updated.each do |path|
         @examples.values.each { |example| example.file_touched path }
+        any_processed = true
       end
       @file_watcher.removed.each do |path|
         @examples.delete_if { |name, example| example.in_file? path }
+        any_processed = true
       end
-      @runner.request_inventory if @examples.empty? || @file_watcher.added.any?
+      if @examples.empty? || @file_watcher.added.any?
+        @runner.request_inventory
+        any_processed = true
+      end
       @runner.request_results stale_example_names
-      @runner.results.each { |result| update_or_create_example result }
+      @runner.results.each do |result|
+        update_or_create_example result
+        any_processed = true
+      end
+      any_processed
     end
 
     def stale_example_names

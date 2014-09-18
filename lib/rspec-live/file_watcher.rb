@@ -9,10 +9,6 @@ module RSpecLive
       end.start
     end
 
-    def updates_available?
-      @updated.any? || @added.any? || @removed.any?
-    end
-
     def updated
       queued_results @updated
     end

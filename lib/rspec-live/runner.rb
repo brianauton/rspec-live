@@ -23,10 +23,6 @@ module RSpecLive
       @results.pop @results.length
     end
 
-    def updates_available?
-      results.any?
-    end
-
     private
 
     def run(formatter, options="", &block)

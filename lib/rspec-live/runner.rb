@@ -12,10 +12,6 @@ module RSpecLive
       run "inventory", "--dry-run"
     end
 
-    def example_names
-      @example_names.pop @example_names.length
-    end
-
     def request_results(examples)
       @queued_examples = (@queued_examples + examples).uniq
       return if @queued_examples.empty?

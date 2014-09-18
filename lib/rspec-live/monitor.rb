@@ -12,7 +12,7 @@ module RSpecLive
     end
 
     def start
-      process_updates
+      @display.update
       while !@quit do
         process_updates if updates_available?
         sleep 0.05

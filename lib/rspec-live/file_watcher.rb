@@ -28,11 +28,7 @@ module RSpecLive
     private
 
     def queued_results(queue)
-      [].tap do |result|
-        while queue.any?
-          result << queue.shift
-        end
-      end
+      queue.pop queue.length
     end
   end
 end

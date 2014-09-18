@@ -27,18 +27,15 @@ module RSpecLive
       @results.pop @results.length
     end
 
-    def on_update(&block)
-      @update_listener = block
+    def updates_available?
+      results.any?
     end
 
     private
 
     def run(formatter, options="", &block)
       process = ConcurrentProcess.new formatter_command(formatter, options)
-      process.each_line do |line|
-        @results << JSON.parse(line)
-        @update_listener.call if @update_listener
-      end
+      process.each_line { |line| @results << JSON.parse(line) }
     end
 
     def formatter_command(formatter, options)

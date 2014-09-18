@@ -4,18 +4,15 @@ require "rspec-live/result_detail"
 
 module RSpecLive
   class Monitor
-    def initialize(suite, runner, display, detail, file_watcher)
+    def initialize(suite, display, detail)
       @suite = suite
-      @runner = runner
       @display = display
       @detail = detail
-      @file_watcher = file_watcher
       @quit = false
     end
 
     def start
-      @runner.on_update { @display.update }
-      @suite.reset
+      process_updates
       while !@quit do
         process_updates if updates_available?
         sleep 0.05
@@ -32,7 +29,7 @@ module RSpecLive
     end
 
     def updates_available?
-      [key_handler, @file_watcher].any?(&:updates_available?)
+      key_handler.updates_available? || @suite.updates_available?
     end
 
     def key_handler

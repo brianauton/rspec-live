@@ -55,8 +55,8 @@ module RSpecLive
       [@message.gsub("\n", " ").strip.inspect]
     end
 
-    def files_touched(names)
-      names.each { |name| @status = :unknown if @files_touched.include? name }
+    def file_touched(name)
+      @status = :unknown if @files_touched.include? name
     end
 
     def in_file?(filename)

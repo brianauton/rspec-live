@@ -1,15 +1,15 @@
 require "listen"
 require "rspec-live/key_handler"
-require "rspec-live/file_watcher"
 require "rspec-live/result_detail"
 
 module RSpecLive
   class Monitor
-    def initialize(suite, runner, display, detail)
+    def initialize(suite, runner, display, detail, file_watcher)
       @suite = suite
       @runner = runner
       @display = display
       @detail = detail
+      @file_watcher = file_watcher
       @quit = false
     end
 
@@ -17,8 +17,9 @@ module RSpecLive
       @runner.on_update { @display.update @suite }
       @suite.reset
       while !@quit do
-        if key_handler.updates_available?
+        if services.any?(&:updates_available?)
           key_handler.process_updates
+          @suite.process_updates
           @display.update @suite
         end
         sleep 0.05
@@ -26,6 +27,10 @@ module RSpecLive
     end
 
     private
+
+    def services
+      [key_handler, @file_watcher]
+    end
 
     def key_handler
       @key_handler ||= KeyHandler.new.tap do |handler|
@@ -35,10 +40,6 @@ module RSpecLive
         handler.on("r") { @suite.reset }
         handler.on("v") { @detail.cycle_verbosity }
       end
-    end
-
-    def file_watcher
-      @file_watcher ||= FileWatcher.new(Dir.pwd, @suite)
     end
   end
 end

@@ -2,8 +2,9 @@ require "rspec-live/example"
 
 module RSpecLive
   class Suite
-    def initialize(runner)
+    def initialize(runner, file_watcher)
       @runner = runner
+      @file_watcher = file_watcher
       @examples = {}
     end
 
@@ -23,20 +24,15 @@ module RSpecLive
       @examples.each_value { |example| example.status = :unknown }
     end
 
-    def files_updated(paths)
-      @examples.values.each { |example| example.files_touched paths }
-      update
-    end
-
-    def files_removed(paths)
-      @examples.delete_if do |name, example|
-        paths.any? {|path| example.in_file? path }
+    def process_updates
+      return unless @file_watcher.updates_available?
+      @file_watcher.updated.each do |path|
+        @examples.values.each { |example| example.file_touched path }
       end
-      files_updated paths
-    end
-
-    def files_added(paths)
-      inventory
+      @file_watcher.removed.each do |path|
+        @examples.delete_if { |name, example| example.in_file? path }
+      end
+      inventory if @file_watcher.added.any?
       update
     end
 

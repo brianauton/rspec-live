@@ -2,7 +2,6 @@ module RSpecLive
   class KeyHandler
     def initialize
       @event = {}
-      @keys_received = []
     end
 
     def on(*keys, &block)
@@ -10,12 +9,9 @@ module RSpecLive
     end
 
     def process_updates
-      while key = get_character_if_available
-        @keys_received << key
-      end
       any_processed = false
-      while @keys_received.any?
-        handle @keys_received.shift
+      while key = get_character_if_available
+        handle key
         any_processed = true
       end
       any_processed

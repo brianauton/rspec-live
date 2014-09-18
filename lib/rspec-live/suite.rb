@@ -13,8 +13,8 @@ module RSpecLive
     end
 
     def update
-      @runner.update(stale_example_names) do |example_data|
-        update_or_create_example example_data
+      @runner.results(stale_example_names).each do |result|
+        update_or_create_example result
       end
     end
 

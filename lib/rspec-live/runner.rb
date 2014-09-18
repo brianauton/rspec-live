@@ -9,18 +9,20 @@ module RSpecLive
       @status = ""
     end
 
-    def example_names(&block)
+    def example_names
       @status = "analyzing specs"
       [].tap do |results|
         run("inventory", "--dry-run") { |result| results << result["name"] }
       end
     end
 
-    def update(example_names = [], &block)
+    def results(example_names = [])
       @status = "running #{example_names.count} specs"
-      run "update", example_names.join(" "), &block
+      results = []
+      run("update", example_names.join(" ")) { |result| results << result }
       @status = "watching for updates..."
       @update_listener.call if @update_listener
+      results
     end
 
     def on_update(&block)

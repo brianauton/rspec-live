@@ -17,26 +17,29 @@ module RSpecLive
       @runner.on_update { @display.update @suite }
       @suite.reset
       while !@quit do
-        if services.any?(&:updates_available?)
-          key_handler.process_updates
-          @suite.process_updates
-          @display.update @suite
-        end
+        process_updates if updates_available?
         sleep 0.05
       end
+      rescue Interrupt
     end
 
     private
 
-    def services
-      [key_handler, @file_watcher]
+    def process_updates
+      key_handler.process_updates
+      @suite.process_updates
+      @display.update @suite
+    end
+
+    def updates_available?
+      [key_handler, @file_watcher].any?(&:updates_available?)
     end
 
     def key_handler
       @key_handler ||= KeyHandler.new.tap do |handler|
         handler.on("a") { @detail.toggle_all }
         handler.on("n") { @detail.focus_next }
-        handler.on("q", :interrupt) { @quit = true }
+        handler.on("q") { @quit = true }
         handler.on("r") { @suite.reset }
         handler.on("v") { @detail.cycle_verbosity }
       end

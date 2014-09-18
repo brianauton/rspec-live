@@ -19,10 +19,19 @@ module RSpecLive
         end
       rescue Errno::EIO
       end
-      @output.each_line { |line| yield line }
+      shift_completed_lines.each_line { |line| yield line }
     end
 
     private
+
+    def shift_completed_lines
+      lines = ""
+      while index = @output.index("\n")
+        lines << @output.slice(0, index + 1)
+        @output = @output.slice(index + 1, @output.length - index - 1)
+      end
+      lines
+    end
 
     def read_characters
       while char = @stdout.read_nonblock(1)

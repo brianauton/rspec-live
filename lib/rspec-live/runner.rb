@@ -5,27 +5,30 @@ module RSpecLive
   class Runner
     def initialize
       @queued_examples = []
+      @example_names = []
+      @results = []
     end
 
     def request_inventory
+      run "inventory", "--dry-run" do |result|
+        @example_names << result["name"]
+      end
     end
 
     def example_names
-      [].tap do |results|
-        run("inventory", "--dry-run") { |result| results << result["name"] }
-      end
+      @example_names.pop @example_names.length
     end
 
     def request_results(examples)
       @queued_examples = (@queued_examples + examples).uniq
+      run "update", @queued_examples.join(" ") do |result|
+        @results << result
+      end
+      @queued_examples = []
     end
 
     def results
-      results = []
-      run("update", @queued_examples.join(" ")) { |result| results << result }
-      @queued_examples = []
-      @update_listener.call if @update_listener
-      results
+      @results.pop @results.length
     end
 
     def on_update(&block)

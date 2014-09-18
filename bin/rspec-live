@@ -10,5 +10,5 @@ runner = RSpecLive::Runner.new
 file_watcher = RSpecLive::FileWatcher.new(Dir.pwd)
 suite = RSpecLive::Suite.new(runner, file_watcher)
 detail = RSpecLive::ResultDetail.new(suite)
-display = RSpecLive::Display.new(runner, detail)
+display = RSpecLive::Display.new(runner, suite, detail)
 RSpecLive::Monitor.new(suite, runner, display, detail, file_watcher).start

@@ -14,7 +14,7 @@ module RSpecLive
     end
 
     def start
-      @runner.on_update { @display.update @suite }
+      @runner.on_update { @display.update }
       @suite.reset
       while !@quit do
         process_updates if updates_available?
@@ -28,7 +28,7 @@ module RSpecLive
     def process_updates
       key_handler.process_updates
       @suite.process_updates
-      @display.update @suite
+      @display.update
     end
 
     def updates_available?

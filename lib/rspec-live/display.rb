@@ -4,16 +4,17 @@ module RSpecLive
   class Display
     attr_reader :runner_display, :suite_display
 
-    def initialize(runner, detail)
+    def initialize(runner, suite, detail)
       @terminal = Terminal.new
       @runner_display = RunnerDisplay.new(runner, @terminal)
       @terminal.add_section :display => :block, :content => key_command_info, :color => :blue
+      @suite = suite
       @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
       @detail = detail
     end
 
-    def update(suite)
-      @suite_display.show_examples suite.ordered_examples, suite.summary, @detail.detailed_examples, @detail.verbosity
+    def update
+      @suite_display.show_examples @suite.ordered_examples, @suite.summary, @detail.detailed_examples, @detail.verbosity
       @terminal.refresh
     end
 

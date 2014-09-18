@@ -7,6 +7,7 @@ module RSpecLive
 
     def initialize
       @status = ""
+      @queued_examples = []
     end
 
     def example_names
@@ -16,10 +17,15 @@ module RSpecLive
       end
     end
 
-    def results(example_names = [])
-      @status = "running #{example_names.count} specs"
+    def request_results(example_names)
+      @queued_examples += example_names
+    end
+
+    def results
+      @status = "running #{@queued_examples.count} specs"
       results = []
-      run("update", example_names.join(" ")) { |result| results << result }
+      run("update", @queued_examples.join(" ")) { |result| results << result }
+      @queued_examples = []
       @status = "watching for updates..."
       @update_listener.call if @update_listener
       results

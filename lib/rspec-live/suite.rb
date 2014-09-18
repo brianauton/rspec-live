@@ -13,7 +13,8 @@ module RSpecLive
     end
 
     def update
-      @runner.results(stale_example_names).each do |result|
+      @runner.request_results stale_example_names
+      @runner.results.each do |result|
         update_or_create_example result
       end
     end
@@ -36,6 +37,10 @@ module RSpecLive
 
     def stale_example_names
       @examples.values.select(&:stale?).map(&:name)
+    end
+
+    def activity_status
+      @runner.status
     end
 
     def summary

@@ -27,6 +27,7 @@ module RSpecLive
 
     def run(formatter, options="", &block)
       process = ConcurrentProcess.new formatter_command(formatter, options)
+      process.start
       process.each_line { |line| @results << JSON.parse(line) }
     end
 

@@ -9,9 +9,11 @@ module RSpecLive
       @status = ""
     end
 
-    def inventory(&block)
+    def example_names(&block)
       @status = "analyzing specs"
-      run "inventory", "--dry-run", &block
+      [].tap do |results|
+        run("inventory", "--dry-run") { |result| results << result["name"] }
+      end
     end
 
     def update(example_names = [], &block)

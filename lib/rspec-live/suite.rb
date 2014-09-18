@@ -9,9 +9,7 @@ module RSpecLive
     end
 
     def inventory
-      @runner.inventory do |example_data|
-        @examples[example_data["name"]] ||= Example.new
-      end
+      @runner.example_names.each { |name| @examples[name] ||= Example.new }
     end
 
     def update
@@ -43,7 +41,7 @@ module RSpecLive
     def summary
       passed = ordered_examples.select(&:passed?).length
       total = ordered_examples.length
-      percent = (100*passed/total.to_f).round
+      percent = total.zero? ? 0 : (100*passed/total.to_f).round
       "#{passed} of #{total} examples passed (#{percent}%)"
     end
 

@@ -8,20 +8,6 @@ module RSpecLive
       @examples = {}
     end
 
-    def inventory
-      @runner.request_inventory
-      @runner.results.each do |result|
-        update_or_create_example result
-      end
-    end
-
-    def update
-      @runner.request_results stale_example_names
-      @runner.results.each do |result|
-        update_or_create_example result
-      end
-    end
-
     def clear_status
       @examples.each_value { |example| example.status = :unknown }
     end
@@ -33,8 +19,9 @@ module RSpecLive
       @file_watcher.removed.each do |path|
         @examples.delete_if { |name, example| example.in_file? path }
       end
-      inventory if @file_watcher.added.any?
-      update
+      @runner.request_inventory if @file_watcher.added.any?
+      @runner.request_results stale_example_names
+      @runner.results.each { |result| update_or_create_example result }
     end
 
     def stale_example_names
@@ -59,8 +46,7 @@ module RSpecLive
 
     def reset
       clear_status
-      inventory
-      update
+      @runner.request_inventory
     end
 
     def ordered_example_names

@@ -9,9 +9,7 @@ module RSpecLive
     end
 
     def request_inventory
-      run "inventory", "--dry-run" do |result|
-        @results << result
-      end
+      run "inventory", "--dry-run"
     end
 
     def example_names
@@ -21,9 +19,7 @@ module RSpecLive
     def request_results(examples)
       @queued_examples = (@queued_examples + examples).uniq
       return if @queued_examples.empty?
-      run "update", @queued_examples.join(" ") do |result|
-        @results << result
-      end
+      run "update", @queued_examples.join(" ")
       @queued_examples = []
     end
 
@@ -40,7 +36,7 @@ module RSpecLive
     def run(formatter, options="", &block)
       process = ConcurrentProcess.new formatter_command(formatter, options)
       process.each_line do |line|
-        block.call JSON.parse line
+        @results << JSON.parse(line)
         @update_listener.call if @update_listener
       end
     end

@@ -10,7 +10,9 @@ module RSpecLive
 
     def inventory
       @runner.request_inventory
-      @runner.example_names.each { |name| @examples[name] ||= Example.new }
+      @runner.results.each do |result|
+        update_or_create_example result
+      end
     end
 
     def update
@@ -25,7 +27,6 @@ module RSpecLive
     end
 
     def process_updates
-      return unless @file_watcher.updates_available?
       @file_watcher.updated.each do |path|
         @examples.values.each { |example| example.file_touched path }
       end

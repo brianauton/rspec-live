@@ -5,13 +5,12 @@ module RSpecLive
   class Runner
     def initialize
       @queued_examples = []
-      @example_names = []
       @results = []
     end
 
     def request_inventory
       run "inventory", "--dry-run" do |result|
-        @example_names << result["name"]
+        @results << result
       end
     end
 
@@ -21,6 +20,7 @@ module RSpecLive
 
     def request_results(examples)
       @queued_examples = (@queued_examples + examples).uniq
+      return if @queued_examples.empty?
       run "update", @queued_examples.join(" ") do |result|
         @results << result
       end

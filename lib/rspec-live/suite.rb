@@ -40,7 +40,8 @@ module RSpecLive
     end
 
     def activity_status
-      @runner.status
+      run_count = stale_example_names.count
+      run_count.zero? ? "watching for updates..." : "running #{run_count} specs"
     end
 
     def summary

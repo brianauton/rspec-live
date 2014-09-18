@@ -3,15 +3,11 @@ require "json"
 
 module RSpecLive
   class Runner
-    attr_reader :status
-
     def initialize
-      @status = ""
       @queued_examples = []
     end
 
     def example_names
-      @status = "analyzing specs"
       [].tap do |results|
         run("inventory", "--dry-run") { |result| results << result["name"] }
       end
@@ -22,11 +18,9 @@ module RSpecLive
     end
 
     def results
-      @status = "running #{@queued_examples.count} specs"
       results = []
       run("update", @queued_examples.join(" ")) { |result| results << result }
       @queued_examples = []
-      @status = "watching for updates..."
       @update_listener.call if @update_listener
       results
     end

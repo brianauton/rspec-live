@@ -2,21 +2,24 @@ module RSpecLive
   class KeyHandler
     def initialize
       @event = {}
+      @keys_received = []
     end
 
     def on(*keys, &block)
       keys.each { |key| @event[key] = block }
     end
 
-    def poll
-      key = get_character_if_available
-      handle key if key
-    rescue Interrupt
-      handle :interrupt
+    def updates_available?
+      while key = get_character_if_available
+        @keys_received << key
+      end
+      @keys_received.any?
     end
 
-    def on_update(&block)
-      @update_listener = block
+    def process_updates
+      while @keys_received.any?
+        handle @keys_received.shift
+      end
     end
 
     private

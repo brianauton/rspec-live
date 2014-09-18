@@ -7,11 +7,5 @@ module RSpecLive
         receiver.files_added added if added.any?
       end.start
     end
-
-    def poll
-    end
-
-    def on_update(&block)
-    end
   end
 end

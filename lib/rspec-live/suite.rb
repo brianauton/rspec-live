@@ -9,6 +9,7 @@ module RSpecLive
     end
 
     def inventory
+      @runner.request_inventory
       @runner.example_names.each { |name| @examples[name] ||= Example.new }
     end
 

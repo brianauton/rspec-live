@@ -1,4 +1,4 @@
-require "pty"
+require "rspec-live/concurrent_process"
 require "json"
 
 module RSpecLive
@@ -7,14 +7,17 @@ module RSpecLive
       @queued_examples = []
     end
 
+    def request_inventory
+    end
+
     def example_names
       [].tap do |results|
         run("inventory", "--dry-run") { |result| results << result["name"] }
       end
     end
 
-    def request_results(example_names)
-      @queued_examples += example_names
+    def request_results(examples)
+      @queued_examples = (@queued_examples + examples).uniq
     end
 
     def results
@@ -32,16 +35,11 @@ module RSpecLive
     private
 
     def run(formatter, options="", &block)
-      PTY.spawn formatter_command(formatter, options) do |stdin, stdout, pid|
-        begin
-          stdin.each do |line|
-            block.call JSON.parse line
-            @update_listener.call if @update_listener
-          end
-        rescue Errno::EIO
-        end
+      process = ConcurrentProcess.new formatter_command(formatter, options)
+      process.each_line do |line|
+        block.call JSON.parse line
+        @update_listener.call if @update_listener
       end
-    rescue PTY::ChildExited
     end
 
     def formatter_command(formatter, options)

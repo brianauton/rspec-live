@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("lib/**/*") + ["README.md", "History.md", "License.txt"]
   s.require_path = "lib"
   s.executables = ["rspec-live"]
-  s.add_dependency "rspec", "~> 3.0.0"
+  s.add_dependency "rspec", "~> 3.0"
   s.add_dependency "listen", "~> 2.7.9"
   s.add_dependency "curses", "~> 1.0.1"
 end

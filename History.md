@@ -1,3 +1,10 @@
+### Version 0.0.2
+2014-9-19
+
+* Use coverage analysis to choose which specs to rerun
+* Don't block key commands while waiting for RSpec results
+* Bugfixes
+
 ### Version 0.0.1
 2014-8-12
 

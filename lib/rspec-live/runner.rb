@@ -13,7 +13,7 @@ module RSpecLive
     end
 
     def request_results(examples)
-      @queued_examples = (@queued_examples + examples).uniq
+      @queued_examples = examples
       return if @queued_examples.empty?
     end
 

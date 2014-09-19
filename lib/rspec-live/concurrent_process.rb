@@ -7,18 +7,17 @@ module RSpecLive
       @output = ""
     end
 
+    def running?
+      @running
+    end
+
     def start
-      @stdout = PTY.spawn(@command).first
+      @stdout, @stdin, @pid = PTY.spawn @command
+      @running = true
     end
 
     def each_line
-      begin
-        loop do
-          sleep 0.001
-          read_characters
-        end
-      rescue Errno::EIO
-      end
+      read_characters if running?
       shift_completed_lines.each_line { |line| yield line }
     end
 
@@ -34,10 +33,14 @@ module RSpecLive
     end
 
     def read_characters
-      while char = @stdout.read_nonblock(1)
+      while char = @stdout.read_nonblock(100000)
         @output << char
       end
-    rescue IO::EAGAINWaitReadable
+    rescue IO::WaitReadable
+    rescue Errno::EIO
+      @stdout.close
+      @stdin.close
+      @running = false
     end
   end
 end

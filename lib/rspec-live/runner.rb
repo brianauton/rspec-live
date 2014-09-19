@@ -9,26 +9,35 @@ module RSpecLive
     end
 
     def request_inventory
-      run "inventory", "--dry-run"
+      @inventory_requested = true
     end
 
     def request_results(examples)
       @queued_examples = (@queued_examples + examples).uniq
       return if @queued_examples.empty?
-      run "update", @queued_examples.join(" ")
-      @queued_examples = []
     end
 
     def results
+      start_process unless @process && @process.running?
+      @process.each_line { |line| @results << JSON.parse(line) } if @process
       @results.pop @results.length
     end
 
     private
 
+    def start_process
+      if @inventory_requested
+        run "inventory", "--dry-run"
+        @inventory_requested = false
+      elsif @queued_examples.any?
+        run "update", @queued_examples.join(" ")
+        @queued_examples = []
+      end
+    end
+
     def run(formatter, options="", &block)
-      process = ConcurrentProcess.new formatter_command(formatter, options)
-      process.start
-      process.each_line { |line| @results << JSON.parse(line) }
+      @process = ConcurrentProcess.new formatter_command(formatter, options)
+      @process.start
     end
 
     def formatter_command(formatter, options)

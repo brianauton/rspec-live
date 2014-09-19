@@ -5,7 +5,7 @@ module RSpecLive
     def initialize
       Terminal.reset_curses
       @root_section = TerminalSection.new
-      Signal.trap("SIGWINCH", proc { Terminal.reset_curses; refresh })
+      Signal.trap("SIGWINCH", proc { Terminal.reset_curses; @root_section.update_required = true })
     end
 
     def self.reset_curses
@@ -42,9 +42,15 @@ module RSpecLive
     def refresh
       @root_section.refresh
     end
+
+    def update_required?
+      @root_section.update_required
+    end
   end
 
   class TerminalSection
+    attr_accessor :update_required
+
     def initialize(parent = nil, options = {}, &block)
       @content = block || ""
       @parent = parent
@@ -77,6 +83,7 @@ module RSpecLive
         draw
         Curses.refresh
       end
+      @update_required = false
     end
 
     def draw

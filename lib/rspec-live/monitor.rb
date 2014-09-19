@@ -14,13 +14,17 @@ module RSpecLive
     def start
       @display.update
       while !@quit do
-        @display.update if key_handler.process_updates || @suite.process_updates
+        @display.update if process_updates || @display.update_required?
         sleep 0.05
       end
       rescue Interrupt
     end
 
     private
+
+    def process_updates
+      key_handler.process_updates || @suite.process_updates
+    end
 
     def key_handler
       @key_handler ||= KeyHandler.new.tap do |handler|

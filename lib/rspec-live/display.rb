@@ -16,6 +16,10 @@ module RSpecLive
       @terminal.refresh
     end
 
+    def update_required?
+      @terminal.update_required?
+    end
+
     private
 
     def key_command_info

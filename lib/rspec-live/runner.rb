@@ -8,8 +8,8 @@ module RSpecLive
       @results = []
     end
 
-    def request_inventory
-      @inventory_requested = true
+    def request_inventory(status)
+      @inventory_requested = status
     end
 
     def request_results(examples)

@@ -13,17 +13,16 @@ module RSpecLive
       @file_watcher.updated.each do |path|
         @examples.values.each { |example| example.file_touched path }
         @examples.delete_if { |name, example| example.in_file? path }
-        any_processed = true
-        need_inventory = true
+        any_processed = need_inventory = true
       end
       @file_watcher.removed.each do |path|
         @examples.delete_if { |name, example| example.in_file? path }
         any_processed = true
       end
-      if @examples.empty? || @file_watcher.added.any? || need_inventory
-        @runner.request_inventory
-        any_processed = true
+      if @examples.empty? || @file_watcher.added.any?
+        any_processed = need_inventory = true
       end
+      @runner.request_inventory(need_inventory)
       @runner.request_results stale_example_names
       @runner.results.each do |result|
         update_or_create_example result
@@ -58,7 +57,6 @@ module RSpecLive
 
     def reset
       @examples = {}
-      @runner.request_inventory
     end
 
     def ordered_example_names

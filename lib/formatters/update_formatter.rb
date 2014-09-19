@@ -32,7 +32,7 @@ class UpdateFormatter
       :status => status,
       :files_touched => filtered_files_touched(example),
     }
-    @output << "#{JSON.unparse data.merge(options)}\n"
+    @output << "\n#{JSON.unparse data.merge(options)}\n"
   end
 
   def filtered_files_touched(example)

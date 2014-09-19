@@ -8,6 +8,6 @@ class InventoryFormatter
   end
 
   def example_started(notification)
-    @output << "#{JSON.unparse(name: notification.example.location)}\n"
+    @output << "\n#{JSON.unparse(name: notification.example.location)}\n"
   end
 end

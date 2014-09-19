@@ -19,11 +19,16 @@ module RSpecLive
 
     def results
       start_process unless @process && @process.running?
-      @process.each_line { |line| @results << JSON.parse(line) } if @process
+      @process.each_line { |line| record_result line } if @process
       @results.pop @results.length
     end
 
     private
+
+    def record_result(text)
+      @results << JSON.parse(text)
+    rescue JSON::ParserError
+    end
 
     def start_process
       if @inventory_requested

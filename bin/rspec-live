@@ -5,6 +5,7 @@ require "rspec-live/monitor"
 require "rspec-live/display"
 require "rspec-live/result_detail"
 require "rspec-live/file_watcher"
+require "rspec-live/log"
 
 runner = RSpecLive::Runner.new
 file_watcher = RSpecLive::FileWatcher.new(Dir.pwd)

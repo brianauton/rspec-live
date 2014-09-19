@@ -55,7 +55,7 @@ module RSpecLive
     end
 
     def character
-      {:unknown => ".", :passed => ".", :failed => "F", :pending => "S"}
+      {:unknown => "?", :passed => ".", :failed => "F", :pending => "*"}
     end
 
     def color

@@ -8,21 +8,19 @@ module RSpecLive
       @examples = {}
     end
 
-    def clear_status
-      @examples.each_value { |example| example.status = :unknown }
-    end
-
     def process_updates
-      any_processed = false
+      any_processed = need_inventory = false
       @file_watcher.updated.each do |path|
         @examples.values.each { |example| example.file_touched path }
+        @examples.delete_if { |name, example| example.in_file? path }
         any_processed = true
+        need_inventory = true
       end
       @file_watcher.removed.each do |path|
         @examples.delete_if { |name, example| example.in_file? path }
         any_processed = true
       end
-      if @examples.empty? || @file_watcher.added.any?
+      if @examples.empty? || @file_watcher.added.any? || need_inventory
         @runner.request_inventory
         any_processed = true
       end
@@ -59,7 +57,7 @@ module RSpecLive
     end
 
     def reset
-      clear_status
+      @examples = {}
       @runner.request_inventory
     end
 

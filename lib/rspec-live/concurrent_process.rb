@@ -12,6 +12,7 @@ module RSpecLive
     end
 
     def start
+      @started_at = Time.now
       @stdout, @stdin, @pid = PTY.spawn @command
       @running = true
     end
@@ -41,6 +42,7 @@ module RSpecLive
       @stdout.close
       @stdin.close
       @running = false
+      @duration = Time.now - @started_at
     end
   end
 end

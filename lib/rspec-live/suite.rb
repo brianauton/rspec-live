@@ -40,14 +40,18 @@ module RSpecLive
 
     def activity_status
       run_count = stale_example_names.count
-      run_count.zero? ? "watching for updates..." : "running #{run_count} specs"
+      run_count.zero? ? "watching for updates..." : "running #{example_count run_count}"
     end
 
     def summary
       passed = ordered_examples.select(&:passed?).length
       total = ordered_examples.length
       percent = total.zero? ? 0 : (100*passed/total.to_f).round
-      "#{passed} of #{total} examples passed (#{percent}%)"
+      "#{passed} of #{example_count total} passed (#{percent}%)"
+    end
+
+    def example_count(number)
+      "#{number} example" + (number == 1 ? "" : "s")
     end
 
     def ordered_examples

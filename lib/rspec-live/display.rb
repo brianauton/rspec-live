@@ -1,67 +1,58 @@
-require "rspec-live/terminal"
+require "rspec-live/screen"
 
 module RSpecLive
   class Display
     def initialize(suite, detail)
-      @terminal = Terminal.new
-      @activity_display = ActivityDisplay.new(suite, @terminal)
-      @terminal.add_section :display => :block, :content => key_command_info, :color => :blue
       @suite = suite
-      @suite_display = SuiteDisplay.new(@terminal.add_section :display => :block)
       @detail = detail
+      @screen = Screen.new
     end
 
     def update
-      @suite_display.show_examples @suite.ordered_examples, @suite.summary, @detail.detailed_examples, @detail.verbosity
-      @terminal.refresh
+      @screen.start_frame
+      show_header
+      show_summary
+      show_details
+      @screen.end_frame
     end
 
     def update_required?
-      @terminal.update_required?
+      @screen.update_required?
     end
 
     private
 
-    def key_command_info
-      "Keys: A:show/hide-all N:next V:verbosity R:rerun Q:quit"
+    def show_header
+      @screen.print "RSpec summary for #{File.basename Dir.pwd} (#{@suite.activity_status})\n"
+      @screen.print "Keys: A:show/hide-all N:next V:verbosity R:rerun Q:quit", :color => :blue
     end
-  end
 
-  class ActivityDisplay
-    def initialize(suite, parent_display)
-      @section = parent_display.add_section do
-        "RSpec summary for #{File.basename Dir.pwd} (#{suite.activity_status})"
+    def show_summary
+      @screen.print "\n\n"
+      @suite.ordered_examples.map(&:status).each do |status|
+        @screen.print character[status], :color => color[status]
       end
-    end
-  end
-
-  class SuiteDisplay
-    def initialize(section)
-      @section = section
+      @screen.print "\n\n"
+      @screen.print @suite.summary
     end
 
-    def show_examples(examples, suite_status, detailed_examples, verbosity)
-      @section.clear
-      @section.add_section :display => :block
-      examples.map(&:status).each do |status|
-        @section.add_section :content => character[status], :color => color[status]
-      end
-      @section.add_section :display => :block
-      @section.add_section :content => "#{suite_status}", :display => :block
-      @section.add_section :display => :block
+    def show_details
+      @screen.print "\n\n"
       last_failed = true
-      bullet_width = (detailed_examples.length-1).to_s.length
-      detailed_examples.each_with_index do |example, index|
+      bullet_width = (@detail.detailed_examples.length-1).to_s.length
+      @detail.detailed_examples.each_with_index do |example, index|
         bullet = "#{index+1}.".rjust(bullet_width+1, " ")
-        @section.add_section :display => :block if (!last_failed && example.failed?)
-        @section.add_section :content => example.details(verbosity), :display => :block, :color => color[example.status], :wrap => true, :bullet => bullet
-        @section.add_section :display => :block if example.failed?
+        @screen.print "\n" if (!last_failed && example.failed?)
+        @screen.print "#{bullet} #{example.details @detail.verbosity}", {
+          :color => color[example.status],
+          :wrap => true,
+          :hanging_indent => (bullet_width + 1)
+        }
+        @screen.print "\n"
+        @screen.print "\n" if example.failed?
         last_failed = example.failed?
       end
-      @section.refresh
     end
-
-    private
 
     def character
       {:unknown => ".", :passed => ".", :failed => "F", :pending => "S"}
